@@ -19,7 +19,6 @@ const Login = () => {
     e.preventDefault();
     setMessage("");
 
-    // 🔐 Only allow specific email
     if (email !== "newtalents403@gmail.com") {
       setMessage("Email ntiyemewe!");
       return;
@@ -55,7 +54,6 @@ const Login = () => {
       } else {
         setMessage("Nta document 'data' ibonetse muri Firestore.");
       }
-
     } catch (error) {
       setMessage("Injira ntibishobotse: " + error.message);
     }
@@ -64,13 +62,13 @@ const Login = () => {
   return (
     <>
       <Net />
-      <div className={styles.loginContainer}>
+      <div className={styles.container}>
         <h2 className={styles.loginTitle}>Sign In</h2>
-
-        <form className={styles.loginForm} onSubmit={handleLogin}>
-          {message && <div className={styles.message}>{message}</div>}
+        <form onSubmit={handleLogin}>
+          {message && <div className={styles.messageDiv}>{message}</div>}
 
           <div className={styles.inputGroup}>
+            <i className={styles.inputIcon + " fas fa-envelope"}></i>
             <input
               type="email"
               placeholder="Email"
@@ -81,6 +79,7 @@ const Login = () => {
           </div>
 
           <div className={styles.inputGroup}>
+            <i className={styles.inputIcon + " fas fa-lock"}></i>
             <input
               type="password"
               placeholder="Password"
@@ -90,12 +89,12 @@ const Login = () => {
             />
           </div>
 
-          <button type="submit" className={styles.submitBtn}>
+          <button type="submit" className={styles.btn}>
             Sign In
           </button>
         </form>
 
-        <p className={styles.registerText}>
+        <p className={styles.registerLink}>
           Niba nta konti ya author ufite twandikire WhatsApp kuri{" "}
           <strong>+250722319367</strong> tugufashe.
         </p>
