@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 const ThemeContext = createContext();
 
@@ -10,7 +11,24 @@ export const ThemeProvider = ({ children }) => {
   const [font, setFont] = useState("sans");
   const [fontSize, setFontSize] = useState("base");
 
-  /* Apply changes to CSS variables */
+  /* =========================
+     📥 LOAD FROM COOKIES
+  ========================= */
+  useEffect(() => {
+    const savedTheme = Cookies.get("theme");
+    const savedPrimary = Cookies.get("primary");
+    const savedFont = Cookies.get("font");
+    const savedFontSize = Cookies.get("fontSize");
+
+    if (savedTheme) setTheme(savedTheme);
+    if (savedPrimary) setPrimary(savedPrimary);
+    if (savedFont) setFont(savedFont);
+    if (savedFontSize) setFontSize(savedFontSize);
+  }, []);
+
+  /* =========================
+     🎨 APPLY + SAVE TO COOKIES
+  ========================= */
   useEffect(() => {
     const root = document.documentElement;
 
@@ -36,7 +54,7 @@ export const ThemeProvider = ({ children }) => {
         : "Courier New, monospace"
     );
 
-    // 🔠 Font size scale
+    // 🔠 Font size
     const sizes = {
       sm: "14px",
       base: "16px",
@@ -44,6 +62,13 @@ export const ThemeProvider = ({ children }) => {
       xl: "20px",
     };
     root.style.setProperty("--text-base", sizes[fontSize]);
+
+    /* 💾 SAVE COOKIES (7 days) */
+    Cookies.set("theme", theme, { expires: 7 });
+    Cookies.set("primary", primary, { expires: 7 });
+    Cookies.set("font", font, { expires: 7 });
+    Cookies.set("fontSize", fontSize, { expires: 7 });
+
   }, [theme, primary, font, fontSize]);
 
   return (
