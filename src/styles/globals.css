@@ -198,7 +198,7 @@ html {
 .themeBox {
   position: fixed;
   right: 16px;
-  bottom: 16px;
+  bottom: 0px;
   background: var(--bg-card);
   color: var(--foreground);
   border-radius: var(--radius-lg);
@@ -259,6 +259,20 @@ html {
   background: var(--bg-light);
   color: var(--foreground);
   font-size: 0.85rem;
+}
+/* =========================
+   🌗 INPUTS & SELECT FIX (DARK/LIGHT)
+========================= */
+.themeBox input,
+.themeBox select,
+.themeBox textarea {
+  background: var(--bg-card);
+  color: var(--foreground);
+  border: 1px solid var(--gray-300);
+}
+
+.themeBox input::placeholder {
+  color: var(--text-muted);
 }
 
 /* =========================
