@@ -22,6 +22,7 @@
 .menuIcon {
   display: none;
   cursor: pointer;
+  right: 18px;
   color: var(--foreground);
 }
 
