@@ -1,0 +1,87 @@
+.header {
+  width: 100%;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  z-index: 100;
+}
+
+.logo a {
+  font-size: var(--text-xl);
+  font-weight: bold;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.menuIcon {
+  display: none;
+  cursor: pointer;
+  color: var(--foreground);
+}
+
+/* NAVIGATION */
+.nav ul {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav ul li a {
+  text-decoration: none;
+  color: var(--foreground);
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav ul li a:hover {
+  color: var(--primary);
+}
+
+/* MOBILE */
+@media (max-width: 992px) {
+  .menuIcon {
+    display: block;
+  }
+
+  .nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--background);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+    flex-direction: column;
+    border-top: 1px solid var(--gray-300);
+  }
+
+  .nav.open {
+    max-height: 600px; /* cukup tinggi kuri menu */
+  }
+
+  .nav ul {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .nav ul li a {
+    font-size: var(--text-lg);
+  }
+}
+
+/* Desktop adjustments */
+@media (min-width: 993px) {
+  .nav {
+    display: flex;
+    align-items: center;
+  }
+}
