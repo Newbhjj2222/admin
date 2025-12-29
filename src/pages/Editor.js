@@ -137,7 +137,7 @@ export default function EditorPage() {
       <style jsx>{`
         .editorContainer {
           max-width: 900px;
-          margin: 40px auto;
+          margin: 60px auto;
           padding: 20px;
           background: var(--bg-card);
           color: var(--foreground);
