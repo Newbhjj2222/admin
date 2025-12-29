@@ -137,7 +137,7 @@ export default function EditorPage() {
       <style jsx>{`
         .editorContainer {
           max-width: 900px;
-          margin: 60px auto;
+          margin: 110px auto;
           padding: 20px;
           background: var(--bg-card);
           color: var(--foreground);
@@ -194,7 +194,7 @@ export default function EditorPage() {
         .titleInput::placeholder { color: var(--text-muted); }
 
         .editorArea {
-          min-height: 300px;
+          max-height: 400px;
           padding: 12px;
           font-family: var(--font-sans);
           font-size: var(--text-base);
