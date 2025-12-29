@@ -138,7 +138,7 @@ export default function EditorPage() {
         .editorContainer {
           max-width: 900px;
           margin: 40px auto;
-          margin-top: 80px;
+          margin-top: 120px;
           padding: 20px;
           background: var(--bg-card);
           color: var(--foreground);
@@ -151,6 +151,7 @@ export default function EditorPage() {
 
         .toolbar {
           display: flex;
+          margin-top: 50px;
           flex-wrap: wrap;
           gap: 8px;
           background: var(--bg-card);
@@ -176,7 +177,7 @@ export default function EditorPage() {
 
         .postImage {
           width: 100%;
-          max-height: 400px;
+          max-height: 200px;
           object-fit: cover;
           border-radius: var(--radius-md);
         }
