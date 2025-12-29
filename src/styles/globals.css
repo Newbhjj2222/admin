@@ -198,6 +198,7 @@ html {
 .themeBox {
   position: fixed;
   right: 16px;
+  left: 20px;
   bottom: 16px;
   background: var(--bg-card);
   color: var(--foreground);
