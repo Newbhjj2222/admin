@@ -193,13 +193,11 @@ html {
   touch-action: none;
 }
 /* =========================
-   🎛️ THEME SWITCHER
+   🎛️ THEME SWITCHER (RESPONSIVE)
 ========================= */
 .themeBox {
   position: fixed;
   right: 16px;
-  left: 20px;
-  width: 90%;
   bottom: 16px;
   background: var(--bg-card);
   color: var(--foreground);
@@ -210,8 +208,10 @@ html {
   gap: 12px;
   align-items: center;
   z-index: 9999;
+  transition: all 0.3s ease;
 }
 
+/* Button */
 .themeBox button {
   background: var(--primary);
   color: #fff;
@@ -219,8 +219,12 @@ html {
   border-radius: 50%;
   padding: 10px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Colors */
 .colors {
   display: flex;
   gap: 6px;
@@ -232,13 +236,16 @@ html {
   height: 16px;
   border-radius: 50%;
   cursor: pointer;
+  border: 1px solid var(--gray-300);
 }
 
+/* Color presets */
 .colors span:nth-child(2) { background: #2563eb; }
 .colors span:nth-child(3) { background: #16a34a; }
 .colors span:nth-child(4) { background: #9333ea; }
 .colors span:nth-child(5) { background: #dc2626; }
 
+/* Fonts & size */
 .fonts,
 .fontSize {
   display: flex;
@@ -248,6 +255,62 @@ html {
 
 .themeBox select {
   border-radius: var(--radius-sm);
-  padding: 4px;
+  padding: 4px 6px;
   background: var(--bg-light);
+  color: var(--foreground);
+  font-size: 0.85rem;
+}
+
+/* =========================
+   📱 MOBILE
+========================= */
+@media (max-width: 480px) {
+  .themeBox {
+    right: 10px;
+    bottom: 10px;
+    padding: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
+    max-width: 90vw;
+  }
+
+  .themeBox button {
+    padding: 8px;
+  }
+
+  .colors span {
+    width: 14px;
+    height: 14px;
+  }
+
+  .themeBox select {
+    font-size: 0.8rem;
+    padding: 4px;
+  }
+}
+
+/* =========================
+   📱 TABLET
+========================= */
+@media (min-width: 481px) and (max-width: 768px) {
+  .themeBox {
+    right: 14px;
+    bottom: 14px;
+    padding: 12px;
+    gap: 10px;
+  }
+}
+
+/* =========================
+   🖥️ LARGE SCREENS
+========================= */
+@media (min-width: 1200px) {
+  .themeBox {
+    padding: 14px 16px;
+    gap: 14px;
+  }
+
+  .themeBox select {
+    font-size: 0.9rem;
+  }
 }
