@@ -281,7 +281,7 @@ html {
 @media (max-width: 480px) {
   .themeBox {
     right: 10px;
-    bottom: 10px;
+    bottom: 0px;
     padding: 10px;
     gap: 8px;
     flex-wrap: wrap;
@@ -309,7 +309,7 @@ html {
 @media (min-width: 481px) and (max-width: 768px) {
   .themeBox {
     right: 14px;
-    bottom: 14px;
+    bottom: 0px;
     padding: 12px;
     gap: 10px;
   }
