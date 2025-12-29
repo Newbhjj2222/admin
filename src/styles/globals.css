@@ -199,6 +199,7 @@ html {
   position: fixed;
   right: 16px;
   left: 20px;
+  width: 90%;
   bottom: 16px;
   background: var(--bg-card);
   color: var(--foreground);
