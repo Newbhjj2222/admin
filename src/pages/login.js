@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "@/components/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import Cookies from "js-cookie"; // ✅ Cookie
+import Cookies from "js-cookie";
 import styles from "@/components/Login.module.css";
 import Net from "@/components/Net";
 
@@ -29,7 +29,6 @@ const Login = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Fata document 'data' ibitse users bose
       const docRef = doc(db, "userdate", "data");
       const docSnap = await getDoc(docRef);
 
@@ -37,15 +36,11 @@ const Login = () => {
         const data = docSnap.data();
         let found = false;
 
-        // Shaka aho email yinjijwe ihuye n’iyo ibitse muri database
         for (const key in data) {
           const userData = data[key];
           if (userData.email === email) {
             const fName = userData.fName || "Unknown";
-
-            // ✅ Save username in cookie (7 days)
             Cookies.set("username", fName, { expires: 7 });
-
             found = true;
             break;
           }
@@ -53,7 +48,7 @@ const Login = () => {
 
         if (found) {
           setMessage("Winjiye neza!");
-          router.push("/"); // Home page
+          router.push("/");
         } else {
           setMessage("Email ntiyabonywe muri Firestore.");
         }
@@ -69,40 +64,41 @@ const Login = () => {
   return (
     <>
       <Net />
-      <div className={styles.container}>
-        <h2>Sign in</h2>
-        <form onSubmit={handleLogin}>
-          {message && <div className={styles.messageDiv}>{message}</div>}
+      <div className={styles.loginContainer}>
+        <h2 className={styles.loginTitle}>Sign In</h2>
+
+        <form className={styles.loginForm} onSubmit={handleLogin}>
+          {message && <div className={styles.message}>{message}</div>}
 
           <div className={styles.inputGroup}>
-            <i className="fas fa-envelope"></i>
             <input
               type="email"
               placeholder="Email"
               required
+              className={styles.inputField}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
           <div className={styles.inputGroup}>
-            <i className="fas fa-lock"></i>
             <input
               type="password"
               placeholder="Password"
               required
+              className={styles.inputField}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
-          <button className={styles.btn} type="submit">Sign In</button>
+          <button type="submit" className={styles.submitBtn}>
+            Sign In
+          </button>
         </form>
 
-        <div className={styles.registerLink}>
-          <p>
-            Niba nta konti ya author ufite twandikire WhatsApp kuri{" "}
-            <strong>+250722319367</strong> tugufashe.
-          </p>
-        </div>
+        <p className={styles.registerText}>
+          Niba nta konti ya author ufite twandikire WhatsApp kuri{" "}
+          <strong>+250722319367</strong> tugufashe.
+        </p>
       </div>
     </>
   );
