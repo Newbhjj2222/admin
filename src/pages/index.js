@@ -1,8 +1,10 @@
-// pages/index.js
-import React, { useState } from "react";
+'use client';
+
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import * as cookie from "cookie";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie"; // ✅ front-end cookie
+import cookie from "cookie"; // ✅ server-side cookie
 
 import { db } from "@/components/firebase";
 import {
@@ -19,17 +21,18 @@ import {
 import styles from "@/styles/index.module.css";
 import Net from "@/components/Net";
 import Card from "@/components/Card";
-
 import { FaEye, FaComments, FaEdit, FaTrash } from "react-icons/fa";
 
 const stripHTML = (html = "") => html.replace(/<[^>]*>/g, "");
 
-export default function Home({
-  initialPosts,
-  totalPosts,
-  totalViews,
-}) {
+export default function Home({ initialPosts, totalPosts, totalViews }) {
   const router = useRouter();
+
+  // 🔐 Front-end cookie check (user might delete cookie in browser)
+  useEffect(() => {
+    const username = Cookies.get("username");
+    if (!username) router.push("/login");
+  }, [router]);
 
   const [posts, setPosts] = useState(initialPosts);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -51,7 +54,6 @@ export default function Home({
     setLoadingMore(true);
 
     const last = posts[posts.length - 1];
-
     const q = query(
       collection(db, "posts"),
       orderBy("createdAt", "desc"),
@@ -60,7 +62,6 @@ export default function Home({
     );
 
     const snap = await getDocs(q);
-
     if (snap.empty) {
       setHasMore(false);
       setLoadingMore(false);
@@ -114,7 +115,6 @@ export default function Home({
               {post.imageUrl && (
                 <img src={post.imageUrl} className={styles.image} />
               )}
-
               <h2>{post.head}</h2>
               <p>{stripHTML(post.story).slice(0, 300)}...</p>
 
@@ -149,37 +149,29 @@ export default function Home({
   );
 }
 
-/* 🔐 SERVER SIDE PROTECTION */
+// 🔐 SERVER-SIDE RENDERING + COOKIE CHECK
 export async function getServerSideProps({ req }) {
   const cookies = cookie.parse(req.headers.cookie || "");
   const username = cookies.username;
 
-  // 🔐 AUTH GATE: NTA COOKIE = redirect
+  // 🔒 Redirect if no cookie
   if (!username) {
     return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
+      redirect: { destination: "/login", permanent: false },
     };
   }
 
-  // 🔹 FETCH POSTS ZOSE (NTA FILTER KU USERNAME)
+  // 🔹 Fetch first 10 posts
   const q = query(
     collection(db, "posts"),
     orderBy("createdAt", "desc"),
     limit(10)
   );
-
   const snap = await getDocs(q);
+  const initialPosts = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 
-  const initialPosts = snap.docs.map((d) => ({
-    id: d.id,
-    ...d.data(),
-  }));
-
+  // 🔹 Fetch all posts for total count & views
   const allSnap = await getDocs(collection(db, "posts"));
-
   let totalViews = 0;
   allSnap.forEach((d) => (totalViews += d.data().views || 0));
 
