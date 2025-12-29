@@ -1,5 +1,6 @@
 .container {
   min-height: 100vh;
+  margin-bottom: 40px;
   padding: var(--space-lg);
   background: var(--background);
   color: var(--foreground);
@@ -103,7 +104,7 @@
 
 /* LOAD MORE */
 .loadMore {
-  margin: 40px auto;
+  margin: 20px auto;
   display: block;
   padding: 12px 24px;
   background: var(--gradient-primary);
