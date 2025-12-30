@@ -100,6 +100,8 @@ export default function Store({ stories }) {
       {/* 🎨 STYLES */}
       <style jsx>{`
         .container {
+          margin-top: 50px;
+          margin-bottom: 120px;
           padding: 16px;
           min-height: 100vh;
           background: var(--background);
