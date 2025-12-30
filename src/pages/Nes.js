@@ -1,52 +1,42 @@
 // pages/nes.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { db } from "@/components/firebase";
 import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
+import { useTheme } from "@/components/theme";
 import Net from "@/components/Net";
 
 export default function NESPage({ depositersServer }) {
-  
+  const { theme } = useTheme();
+
   const [depositers, setDepositors] = useState(depositersServer || []);
-  const [selectedId, setSelectedId] = useState("");
-  const [selectedData, setSelectedData] = useState(null);
   const [search, setSearch] = useState("");
+  const [selectedData, setSelectedData] = useState(null);
 
-  // Filter depositers
-  const filteredDepositors = depositers.filter(d =>
-    d.id.toLowerCase().includes(search.toLowerCase())
-  );
-
-  // Load document (client-side)
-  const loadDocument = async () => {
-    if (!selectedId) return alert("Hitamo User.");
-    try {
-      const docRef = doc(db, "depositers", selectedId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setSelectedData(docSnap.data());
-      } else {
-        alert("Document not found!");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error fetching document.");
+  // Filter depositers by search input
+  useEffect(() => {
+    if (!search.trim()) {
+      setSelectedData(null);
+      return;
     }
-  };
+    const matched = depositers.find(d =>
+      d.id.toLowerCase().includes(search.toLowerCase())
+    );
+    setSelectedData(matched || null);
+  }, [search, depositers]);
 
   // Update NES
   const updateNES = async () => {
-    if (!selectedId) return alert("Hitamo user mbere yo kuvugurura NES.");
-    const newNES = prompt("Shyiramo agaciro gashya ka NES:");
-    if (newNES !== null && newNES.trim() !== "") {
-      try {
-        const docRef = doc(db, "depositers", selectedId);
-        await updateDoc(docRef, { nes: newNES });
-        setSelectedData(prev => ({ ...prev, nes: newNES }));
-        alert("NES yavuguruwe neza!");
-      } catch (err) {
-        console.error(err);
-        alert("Habaye ikosa mu kuvugurura NES.");
-      }
+    if (!selectedData) return alert("Hitamo user mbere yo kuvugurura NES.");
+    const newNES = prompt("Shyiramo agaciro gashya ka NES:", selectedData.nes || "");
+    if (!newNES || !newNES.trim()) return;
+    try {
+      const docRef = doc(db, "depositers", selectedData.id);
+      await updateDoc(docRef, { nes: newNES });
+      setSelectedData(prev => ({ ...prev, nes: newNES }));
+      alert("NES yavuguruwe neza!");
+    } catch (err) {
+      console.error(err);
+      alert("Habaye ikosa mu kuvugurura NES.");
     }
   };
 
@@ -64,18 +54,6 @@ export default function NESPage({ depositersServer }) {
           onChange={(e) => setSearch(e.target.value)}
           className="searchInput"
         />
-
-        <select
-          value={selectedId}
-          onChange={(e) => setSelectedId(e.target.value)}
-          className="documentSelect"
-        >
-          <option value="">Hitamo User</option>
-          {filteredDepositors.map(d => (
-            <option key={d.id} value={d.id}>{d.id}</option>
-          ))}
-        </select>
-        <button onClick={loadDocument}>Show</button>
       </div>
 
       {selectedData && (
@@ -126,12 +104,35 @@ export default function NESPage({ depositersServer }) {
           margin-bottom: 20px;
           box-shadow: var(--shadow-md);
         }
-        .documentSelect, .searchInput {
-          padding: 6px 8px;
-          margin: 4px;
+        .searchInput {
+          padding: 6px 10px;
           border-radius: var(--radius-sm);
           border: 1px solid var(--gray-300);
           font-size: var(--text-base);
+          background: var(--bg-card);
+          color: var(--foreground);
+          width: 100%;
+          max-width: 300px;
+        }
+        .nesTable {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          border-radius: var(--radius-md);
+          overflow: hidden;
+        }
+        .nesTable th, .nesTable td {
+          border: 1px solid var(--gray-300);
+          padding: 10px;
+          text-align: left;
+        }
+        .nesTable th {
+          background: var(--primary);
+          color: var(--text-light);
+          font-weight: bold;
+        }
+        .nesTable td {
           background: var(--bg-card);
           color: var(--foreground);
         }
@@ -147,24 +148,10 @@ export default function NESPage({ depositersServer }) {
         button:hover {
           background: var(--primary-dark);
         }
-        .nesTable {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 20px;
-        }
-        .nesTable th, .nesTable td {
-          border: 1px solid var(--gray-300);
-          padding: 8px;
-          text-align: left;
-        }
-        .nesTable th {
-          background: var(--primary);
-          color: var(--text-light);
-        }
         @media (max-width: 768px) {
           .nesTable th, .nesTable td {
             font-size: 0.8rem;
-            padding: 4px;
+            padding: 6px;
           }
           .giver {
             padding: 12px;
@@ -190,7 +177,6 @@ export async function getServerSideProps() {
       id: d.id,
       ...d.data(),
     }));
-
     return { props: { depositersServer: depositers } };
   } catch (err) {
     console.error("Error fetching depositers:", err);
