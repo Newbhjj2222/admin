@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { db } from "../components/firebase";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
-
+import Net from "@/components/Net";
 export async function getServerSideProps() {
   const snap = await getDocs(collection(db, "monetization_requests"));
   const requests = snap.docs.map((d) => ({
@@ -37,6 +37,8 @@ export default function AdminRequests({ initialRequests }) {
   };
 
   return (
+    <>
+    <Net />
     <div className="container">
       <h2 className="title">Monetization Requests</h2>
       {error && <p className="error">{error}</p>}
@@ -71,6 +73,7 @@ export default function AdminRequests({ initialRequests }) {
             </div>
           ))}
         </div>
+            </>
       )}
 
       <style jsx>{`
