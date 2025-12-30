@@ -61,6 +61,7 @@ export default function Team({ members }) {
       <style jsx>{`
         .container {
           margin-top: 50px;
+          margin-bottom: 120px;
           padding: 16px;
           min-height: 100vh;
           background: var(--background);
