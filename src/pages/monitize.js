@@ -65,6 +65,8 @@ export default function Monetize({ initialAuthors }) {
 
       <style jsx>{`
         .container {
+          margin-top: 60px;
+          margin-bottom: 120px;
           padding: 16px;
           min-height: 100vh;
           background: var(--background);
