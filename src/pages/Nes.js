@@ -86,9 +86,8 @@ export default function NESPage({ depositersServer }) {
           <table className="nesTable">
             <thead>
               <tr>
-                <th>Username</th>
-                <th>Phone</th>
-                <th>Momo Name</th>
+                
+                
                 <th>Plan</th>
                 <th>NES</th>
                 <th>Time</th>
@@ -97,10 +96,7 @@ export default function NESPage({ depositersServer }) {
             </thead>
             <tbody>
               <tr>
-                <td>{selectedData.names || "N/A"}</td>
-                <td>{selectedData.phone || "N/A"}</td>
-                <td>{selectedData.momo_name || "N/A"}</td>
-                <td>{selectedData.plan || "N/A"}</td>
+                  <td>{selectedData.plan || "N/A"}</td>
                 <td>{selectedData.nes || "N/A"}</td>
                 <td>
                   {selectedData.timestamp
