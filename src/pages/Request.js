@@ -73,7 +73,7 @@ export default function AdminRequests({ initialRequests }) {
             </div>
           ))}
         </div>
-            </>
+            
       )}
 
       <style jsx>{`
@@ -166,5 +166,6 @@ export default function AdminRequests({ initialRequests }) {
         }
       `}</style>
     </div>
+        </>
   );
 }
