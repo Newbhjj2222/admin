@@ -1,3 +1,4 @@
+
 "use client";
 
 import Head from "next/head";
@@ -81,16 +82,15 @@ export default function Push() {
 
       <Net />
 
-      <main className="container bg-card text-dark shadow-md rounded-md">
-        <form className="p-6" onSubmit={handleSubmit}>
-          <h1 className="text-2xl font-display mb-4">Ongeramo Website</h1>
+      <main className="push-container">
+        <form onSubmit={handleSubmit}>
+          <h1>Ongeramo Website</h1>
 
           <input
             type="text"
             placeholder="Izina rya Website"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full p-3 mb-3 rounded-md border border-gray-300 focus:ring focus:ring-primary"
             required
           />
 
@@ -98,7 +98,6 @@ export default function Push() {
             placeholder="Ibisobanuro bya Website"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full p-3 mb-3 rounded-md border border-gray-300 focus:ring focus:ring-primary"
             required
           />
 
@@ -107,7 +106,6 @@ export default function Push() {
             placeholder="Igiciro (RWF)"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            className="w-full p-3 mb-3 rounded-md border border-gray-300 focus:ring focus:ring-primary"
             required
           />
 
@@ -116,13 +114,11 @@ export default function Push() {
             placeholder="Preview URL (https://...)"
             value={previewUrl}
             onChange={(e) => setPreviewUrl(e.target.value)}
-            className="w-full p-3 mb-3 rounded-md border border-gray-300 focus:ring focus:ring-primary"
             required
           />
 
-          <label className="fileLabel flex items-center gap-2 cursor-pointer mb-4">
-            <FaImage />
-            Hitamo Ifoto / Amafoto
+          <label className="fileLabel">
+            <FaImage /> Hitamo Ifoto / Amafoto
             <input
               type="file"
               accept="image/*"
@@ -133,18 +129,116 @@ export default function Push() {
             />
           </label>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex items-center gap-2 bg-primary text-light p-3 rounded-md hover:bg-primary-dark transition"
-          >
+          <button type="submit" disabled={loading}>
             <FaUpload />
             {loading ? "Biri kubikwa..." : "Bika Website"}
           </button>
 
-          {status && <p className="mt-3 text-sm text-muted">{status}</p>}
+          {status && <p className="status">{status}</p>}
         </form>
       </main>
+
+      {/* =========================
+          CSS yose muri component (responsive + theme aware)
+      ========================== */}
+      <style jsx>{`
+        .push-container {
+          max-width: 700px;
+          margin: 40px auto;
+          padding: 24px;
+          background: var(--bg-card);
+          color: var(--foreground);
+          border-radius: var(--radius-md);
+          box-shadow: var(--shadow-md);
+        }
+
+        h1 {
+          font-size: var(--text-2xl);
+          margin-bottom: 16px;
+          font-family: var(--font-display);
+        }
+
+        input, textarea {
+          width: 100%;
+          padding: 12px;
+          margin-bottom: 12px;
+          border: 1px solid var(--gray-300);
+          border-radius: var(--radius-md);
+          background: var(--bg-card);
+          color: var(--foreground);
+        }
+
+        input:focus, textarea:focus {
+          outline: none;
+          border-color: var(--primary);
+          box-shadow: 0 0 0 2px rgba(37,99,235,0.3);
+        }
+
+        .fileLabel {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          margin-bottom: 16px;
+        }
+
+        button {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          background: var(--primary);
+          color: var(--text-light);
+          border: none;
+          padding: 12px 16px;
+          border-radius: var(--radius-md);
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        button:hover:not(:disabled) {
+          background: var(--primary-dark);
+        }
+
+        button:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+
+        .status {
+          margin-top: 12px;
+          font-size: var(--text-sm);
+          color: var(--text-muted);
+        }
+
+        @media (max-width: 480px) {
+          .push-container {
+            margin: 20px 10px;
+            padding: 16px;
+          }
+
+          input, textarea {
+            padding: 10px;
+          }
+
+          button {
+            padding: 10px;
+          }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+          .push-container {
+            padding: 20px;
+          }
+
+          input, textarea {
+            padding: 12px;
+          }
+
+          button {
+            padding: 12px;
+          }
+        }
+      `}</style>
     </>
   );
 }
