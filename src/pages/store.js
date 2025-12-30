@@ -6,12 +6,33 @@ import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { useTheme } from "@/components/theme";
 import Net from "@/components/Net";
 
+/* ======================
+   🧠 Helper: text → HTML
+====================== */
+function formatEpisode(text = "") {
+  // Escape basic HTML injection
+  let safe = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  // Paragraphs (double line break)
+  safe = safe.replace(/\n\s*\n/g, "</p><p>");
+
+  // Single line break
+  safe = safe.replace(/\n/g, "<br />");
+
+  return `<p>${safe}</p>`;
+}
+
 export default function Store({ stories }) {
   const { theme } = useTheme();
   const [selectedStory, setSelectedStory] = useState("");
   const [episodes, setEpisodes] = useState([]);
 
-  // Load episodes (client-side)
+  /* ======================
+     📥 Load Episodes
+  ====================== */
   const loadEpisodes = async (storyId) => {
     setEpisodes([]);
     if (!storyId) return;
@@ -22,7 +43,9 @@ export default function Store({ stories }) {
     }
   };
 
-  // Copy episode
+  /* ======================
+     📋 Copy Episode
+  ====================== */
   const copyText = async (text) => {
     await navigator.clipboard.writeText(text);
     alert("Episode copied!");
@@ -32,6 +55,7 @@ export default function Store({ stories }) {
     <div className="container">
       <Net />
 
+      {/* 🔽 SELECT STORY */}
       <div className="selectBox">
         <h1>Store of Stories</h1>
 
@@ -51,6 +75,7 @@ export default function Store({ stories }) {
         </select>
       </div>
 
+      {/* 📚 EPISODES */}
       <div className="posts">
         {episodes.length === 0 && selectedStory && (
           <p className="empty">Nta episodes ziboneka</p>
@@ -59,20 +84,30 @@ export default function Store({ stories }) {
         {episodes.map((ep, index) => (
           <div className="post" key={index}>
             <h3>Episode {index + 1}</h3>
-            <p>{ep}</p>
+
+            <div
+              className="content"
+              dangerouslySetInnerHTML={{
+                __html: formatEpisode(ep),
+              }}
+            />
+
             <button onClick={() => copyText(ep)}>Copy</button>
           </div>
         ))}
       </div>
 
+      {/* 🎨 STYLES */}
       <style jsx>{`
         .container {
           padding: 16px;
           min-height: 100vh;
           background: var(--background);
           color: var(--foreground);
+          font-family: var(--font-sans);
         }
 
+        /* SELECT */
         .selectBox {
           max-width: 520px;
           margin: auto;
@@ -81,12 +116,13 @@ export default function Store({ stories }) {
           border-radius: 12px;
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 12px;
           box-shadow: var(--shadow-md);
         }
 
         h1 {
           text-align: center;
+          margin: 0;
         }
 
         select {
@@ -98,44 +134,55 @@ export default function Store({ stories }) {
           border: 1px solid var(--gray-300);
         }
 
+        /* POSTS */
         .posts {
-          margin-top: 20px;
+          margin-top: 24px;
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: 16px;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 18px;
         }
 
         .post {
           background: var(--bg-card);
-          padding: 14px;
-          border-radius: 12px;
-          border-left: 5px solid var(--primary);
+          padding: 16px;
+          border-radius: 14px;
+          border-left: 6px solid var(--primary);
           box-shadow: var(--shadow-sm);
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 12px;
         }
 
         .post h3 {
           margin: 0;
           color: var(--primary);
+          font-size: 1rem;
         }
 
-        .post p {
-          white-space: pre-wrap;
-          line-height: 1.6;
+        /* 📝 FORMATTED TEXT */
+        .content {
           font-size: 0.95rem;
+          line-height: 1.7;
         }
 
+        .content p {
+          margin: 0 0 12px 0;
+        }
+
+        .content br {
+          line-height: 1.7;
+        }
+
+        /* BUTTON */
         button {
           align-self: flex-start;
           background: var(--primary);
           color: white;
           border: none;
-          padding: 6px 12px;
+          padding: 6px 14px;
           border-radius: 6px;
           cursor: pointer;
-          font-size: 0.9rem;
+          font-size: 0.85rem;
         }
 
         button:hover {
@@ -145,9 +192,10 @@ export default function Store({ stories }) {
         .empty {
           text-align: center;
           opacity: 0.7;
+          grid-column: 1 / -1;
         }
 
-        /* 📱 Mobile */
+        /* 📱 MOBILE */
         @media (max-width: 600px) {
           .posts {
             grid-template-columns: 1fr;
@@ -162,7 +210,9 @@ export default function Store({ stories }) {
   );
 }
 
-/* ================= SSR ================= */
+/* ======================
+   🌍 SSR
+====================== */
 export async function getServerSideProps() {
   const snap = await getDocs(collection(db, "stories"));
   const stories = snap.docs.map((d) => ({
