@@ -144,7 +144,7 @@ export default function Push() {
       <style jsx>{`
         .push-container {
           max-width: 700px;
-          margin: 40px auto;
+          margin: 80px auto;
           padding: 24px;
           background: var(--bg-card);
           color: var(--foreground);
