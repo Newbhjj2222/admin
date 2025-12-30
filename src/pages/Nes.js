@@ -1,4 +1,5 @@
 // pages/nes.js
+'use client';
 import React, { useState } from "react";
 import { db } from "@/components/firebase";
 import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
@@ -9,23 +10,16 @@ export default function NESPage({ depositersServer }) {
   const { theme } = useTheme();
 
   const [depositers, setDepositors] = useState(depositersServer || []);
-  const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState("");
   const [selectedData, setSelectedData] = useState(null);
+  const [search, setSearch] = useState("");
 
-  // Auto-select first match based on search
-  React.useEffect(() => {
-    if (!search.trim()) {
-      setSelectedId("");
-      return;
-    }
-    const match = depositers.find(d =>
-      d.id.toLowerCase().includes(search.toLowerCase())
-    );
-    if (match) setSelectedId(match.id);
-  }, [search, depositers]);
+  // Filter depositers based on search input
+  const filteredDepositors = depositers.filter(d =>
+    d.id.toLowerCase().includes(search.toLowerCase())
+  );
 
-  // Load selected document
+  // Load document (client-side)
   const loadDocument = async () => {
     if (!selectedId) return alert("Hitamo User.");
     try {
@@ -46,15 +40,16 @@ export default function NESPage({ depositersServer }) {
   const updateNES = async () => {
     if (!selectedId) return alert("Hitamo user mbere yo kuvugurura NES.");
     const newNES = prompt("Shyiramo agaciro gashya ka NES:");
-    if (!newNES || !newNES.trim()) return;
-    try {
-      const docRef = doc(db, "depositers", selectedId);
-      await updateDoc(docRef, { nes: newNES });
-      setSelectedData(prev => ({ ...prev, nes: newNES }));
-      alert("NES yavuguruwe neza!");
-    } catch (err) {
-      console.error(err);
-      alert("Habaye ikosa mu kuvugurura NES.");
+    if (newNES !== null && newNES.trim() !== "") {
+      try {
+        const docRef = doc(db, "depositers", selectedId);
+        await updateDoc(docRef, { nes: newNES });
+        setSelectedData(prev => ({ ...prev, nes: newNES }));
+        alert("NES yavuguruwe neza!");
+      } catch (err) {
+        console.error(err);
+        alert("Habaye ikosa mu kuvugurura NES.");
+      }
     }
   };
 
@@ -79,48 +74,52 @@ export default function NESPage({ depositersServer }) {
           className="documentSelect"
         >
           <option value="">Hitamo User</option>
-          {depositers
-            .filter(d => d.id.toLowerCase().includes(search.toLowerCase()))
-            .map(d => (
-              <option key={d.id} value={d.id}>{d.id}</option>
-            ))}
+          {filteredDepositors.map(d => (
+            <option key={d.id} value={d.id}>{d.id}</option>
+          ))}
         </select>
-
         <button onClick={loadDocument}>Show</button>
       </div>
 
       {selectedData && (
-        <table className="nesTable">
-          <thead>
-            <tr>
-              <th>Username</th>
-              <th>Phone</th>
-              <th>Momo Name</th>
-              <th>Plan</th>
-              <th>NES</th>
-              <th>Time</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{selectedData.names || "N/A"}</td>
-              <td>{selectedData.phone || "N/A"}</td>
-              <td>{selectedData.momo_name || "N/A"}</td>
-              <td>{selectedData.plan || "N/A"}</td>
-              <td>{selectedData.nes || "N/A"}</td>
-              <td>{selectedData.timestamp ? selectedData.timestamp.toDate().toLocaleDateString('en-GB', { day: '2-digit', month: 'long' }) : "N/A"}</td>
-              <td>
-                <button onClick={updateNES}>Update NES</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="tableWrapper">
+          <table className="nesTable">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Phone</th>
+                <th>Momo Name</th>
+                <th>Plan</th>
+                <th>NES</th>
+                <th>Time</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{selectedData.names || "N/A"}</td>
+                <td>{selectedData.phone || "N/A"}</td>
+                <td>{selectedData.momo_name || "N/A"}</td>
+                <td>{selectedData.plan || "N/A"}</td>
+                <td>{selectedData.nes || "N/A"}</td>
+                <td>
+                  {selectedData.timestamp
+                    ? selectedData.timestamp.toDate().toLocaleDateString('en-GB', { day: '2-digit', month: 'long' })
+                    : "N/A"}
+                </td>
+                <td>
+                  <button onClick={updateNES}>Update NES</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       )}
 
       <style jsx>{`
         .container {
           padding: 20px;
+          margin-top: 70px;
           background: var(--background);
           color: var(--foreground);
           font-family: var(--font-sans);
@@ -158,16 +157,23 @@ export default function NESPage({ depositersServer }) {
         button:hover {
           background: var(--primary-dark);
         }
+        /* Table wrapper for horizontal scroll on mobile */
+        .tableWrapper {
+          overflow-x: auto;
+          width: 100%;
+          margin-top: 20px;
+        }
         .nesTable {
           width: 100%;
           border-collapse: collapse;
-          margin-top: 20px;
+          min-width: 700px; /* ensures scroll on small screens */
           box-shadow: var(--shadow-sm);
         }
         .nesTable th, .nesTable td {
           border: 1px solid var(--gray-300);
           padding: 10px;
           text-align: left;
+          white-space: nowrap;
         }
         .nesTable th {
           background: var(--primary);
@@ -178,17 +184,25 @@ export default function NESPage({ depositersServer }) {
           background: var(--bg-card);
           color: var(--foreground);
         }
+        @media (max-width: 1024px) {
+          .nesTable th, .nesTable td {
+            font-size: 0.9rem;
+            padding: 8px;
+          }
+        }
         @media (max-width: 768px) {
           .nesTable th, .nesTable td {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             padding: 6px;
+          }
+          .giver {
+            padding: 12px;
           }
         }
         @media (max-width: 480px) {
-          .nesTable {
-            display: block;
-            overflow-x: auto;
-            white-space: nowrap;
+          .nesTable th, .nesTable td {
+            font-size: 0.8rem;
+            padding: 4px;
           }
         }
       `}</style>
