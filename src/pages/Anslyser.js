@@ -56,9 +56,9 @@ export default function Analyser({ stories }) {
     const episodes = data.episodes?.length || 1;
     const avgWords = Math.round(totalWords / episodes);
 
-    const pricePerWord = 3.4;
+    const pricePerWord = 4;
     const pricePerEpisode = avgWords * pricePerWord;
-    const totalPrice = pricePerEpisode * episodes;
+    const totalPrice = pricePerEpisode + episodes;
 
     setResult({
       storyName: data.storyName,
@@ -115,7 +115,7 @@ export default function Analyser({ stories }) {
           <div className="grid">
             <p><strong>Umwanditsi:</strong> {result.author}</p>
             <p><strong>Episodes:</strong> {result.episodes}</p>
-            <p><strong>Amazina yose:</strong> {result.totalWords}</p>
+            <p><strong>Amagambo yose hamwe:</strong> {result.totalWords}</p>
             <p><strong>Average / Episode:</strong> {result.avgWords}</p>
             <p><strong>Igiciro / Episode:</strong> {result.pricePerEpisode.toFixed(2)} RWF</p>
             <p className="price">
@@ -132,6 +132,7 @@ export default function Analyser({ stories }) {
       <style jsx>{`
         .page {
           margin-top: 50px;
+          margin-bottom: 120px;
           padding: 16px;
           background: var(--background);
           min-height: 100vh;
