@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState } from "react";
 import Net from "@/components/Net";
@@ -12,10 +12,7 @@ import { useRouter } from "next/navigation";
 const sanitizeUsername = (value = "") => {
   try {
     let name = decodeURIComponent(value);
-    name = name
-      .replace(/[^a-zA-Z0-9\s]/g, "")
-      .replace(/\s+/g, " ")
-      .trim();
+    name = name.replace(/[^a-zA-Z0-9\s]/g, "").replace(/\s+/g, " ").trim();
     return name;
   } catch {
     return value.replace(/[^a-zA-Z0-9\s]/g, "").trim();
@@ -83,7 +80,6 @@ export default function Profile({ username, userData, layID, status }) {
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
-                className="fileInput"
               />
             </label>
           </div>
@@ -101,7 +97,13 @@ export default function Profile({ username, userData, layID, status }) {
           </div>
 
           {feedback && (
-            <div className={feedback.toLowerCase().includes("error") ? "errorFeedback" : "feedback"}>
+            <div
+              className={
+                feedback.toLowerCase().includes("error")
+                  ? "errorFeedback"
+                  : "feedback"
+              }
+            >
               {feedback}
             </div>
           )}
@@ -112,6 +114,7 @@ export default function Profile({ username, userData, layID, status }) {
         </div>
       </div>
 
+      {/* ================== CSS YUZUYE ================== */}
       <style jsx>{`
         .container {
           display: flex;
@@ -125,7 +128,7 @@ export default function Profile({ username, userData, layID, status }) {
         .profileCard {
           background: var(--bg-card);
           color: var(--foreground);
-          padding: 24px;
+          padding: var(--space-lg);
           border-radius: var(--radius-md);
           box-shadow: var(--shadow-md);
           max-width: 400px;
@@ -137,7 +140,7 @@ export default function Profile({ username, userData, layID, status }) {
           position: relative;
           width: 120px;
           height: 120px;
-          margin: 0 auto 16px;
+          margin: 0 auto var(--space-md);
         }
 
         .profilePic {
@@ -164,19 +167,19 @@ export default function Profile({ username, userData, layID, status }) {
           cursor: pointer;
         }
 
-        .fileInput {
+        input[type="file"] {
           display: none;
         }
 
         .username {
           font-size: var(--text-xl);
           font-family: var(--font-display);
-          margin-bottom: 16px;
+          margin-bottom: var(--space-md);
         }
 
         .infoSection {
           text-align: left;
-          margin-bottom: 12px;
+          margin-bottom: var(--space-sm);
         }
 
         .infoSection label {
@@ -196,16 +199,16 @@ export default function Profile({ username, userData, layID, status }) {
         .feedback {
           background: var(--success);
           color: var(--text-light);
-          padding: 8px;
-          margin-top: 12px;
+          padding: var(--space-sm);
+          margin-top: var(--space-sm);
           border-radius: var(--radius-sm);
         }
 
         .errorFeedback {
           background: var(--danger);
           color: var(--text-light);
-          padding: 8px;
-          margin-top: 12px;
+          padding: var(--space-sm);
+          margin-top: var(--space-sm);
           border-radius: var(--radius-sm);
         }
 
@@ -217,11 +220,11 @@ export default function Profile({ username, userData, layID, status }) {
           background: var(--primary);
           color: var(--text-light);
           border: none;
-          padding: 12px;
+          padding: var(--space-md);
           border-radius: var(--radius-md);
           cursor: pointer;
           width: 100%;
-          margin-top: 16px;
+          margin-top: var(--space-md);
           transition: all 0.3s ease;
         }
 
@@ -229,10 +232,9 @@ export default function Profile({ username, userData, layID, status }) {
           background: var(--primary-dark);
         }
 
-        /* ================== Responsive ================== */
         @media (max-width: 480px) {
           .profileCard {
-            padding: 16px;
+            padding: var(--space-md);
           }
 
           .profilePicContainer {
@@ -245,7 +247,7 @@ export default function Profile({ username, userData, layID, status }) {
           }
 
           .logoutBtn {
-            padding: 10px;
+            padding: var(--space-sm);
           }
         }
 
@@ -259,7 +261,7 @@ export default function Profile({ username, userData, layID, status }) {
   );
 }
 
-/* ================= SERVER SIDE ================= */
+/* ================== SERVER SIDE ================== */
 export async function getServerSideProps(context) {
   const cookie = context.req.headers.cookie || "";
   const match = cookie.match(/username=([^;]+)/);
