@@ -1,34 +1,17 @@
-"use client";
+import { useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/components/firebase";
 
-import { useEffect, useState } from "react";
-
-export default function UserPage() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function UsersPage({ users }) {
+  const [data, setData] = useState(users);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await fetch("/api/get-users");
-        const data = await res.json();
-        setUsers(data.users || []);
-      } catch (error) {
-        console.error("Fetch users error:", error);
-        alert("Habaye ikibazo cyo kubona users");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUsers();
-  }, []);
-
-  const filtered = users.filter((u) =>
+  const filtered = data.filter((u) =>
     `${u.email} ${u.fName}`.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleDelete = async (user) => {
-    if (!confirm(`Ushaka gusiba user ${user.fName} burundu?`)) return;
+    if (!confirm("Ushaka gusiba uyu user burundu?")) return;
 
     try {
       const res = await fetch("/api/delete-user", {
@@ -37,27 +20,14 @@ export default function UserPage() {
         body: JSON.stringify({ uid: user.uid, docKey: user.key }),
       });
 
-      const data = await res.json();
+      if (!res.ok) throw new Error("Failed to delete");
 
-      if (!data.success) {
-        alert(data.error || data.message || "Gusiba byanze");
-        return;
-      }
-
-      if (data.partial) {
-        alert(
-          `⚠️ User yasibwe muri Firestore gusa (Auth byanze): ${data.authError}`
-        );
-      }
-
-      setUsers((prev) => prev.filter((u) => u.key !== user.key));
+      setData((prev) => prev.filter((u) => u.key !== user.key));
     } catch (error) {
+      alert("Hari ikibazo cyo gusiba user.");
       console.error(error);
-      alert("Habaye ikibazo cyo gusiba user");
     }
   };
-
-  if (loading) return <Net />;
 
   return (
     <>
@@ -65,6 +35,7 @@ export default function UserPage() {
 
       <div className="wrapper">
         <h1>Abakoresha (Users)</h1>
+
         <input
           className="search"
           placeholder="Shakisha user..."
@@ -111,6 +82,7 @@ export default function UserPage() {
         </div>
       </div>
 
+      {/* ===== CSS ===== */}
       <style jsx>{`
         .wrapper {
           margin-top: 70px;
@@ -120,24 +92,29 @@ export default function UserPage() {
           color: var(--foreground);
           min-height: 100vh;
         }
+
         h1 {
           margin-bottom: var(--space-md);
+          font-size: var(--text-2xl);
           text-align: center;
         }
+
         .search {
           width: 100%;
           max-width: 360px;
           padding: var(--space-sm);
           border-radius: var(--radius-sm);
           border: 1px solid var(--gray-300);
-          margin: 0 auto var(--space-md);
+          margin: 0 auto var(--space-md) auto;
           display: block;
           background: var(--bg-card);
           color: var(--foreground);
         }
+
         .tableWrap {
           overflow-x: auto;
         }
+
         table {
           width: 100%;
           border-collapse: collapse;
@@ -145,34 +122,79 @@ export default function UserPage() {
           border-radius: var(--radius-md);
           box-shadow: var(--shadow-sm);
         }
+
         th,
         td {
           padding: 12px;
-          text-align: left;
           border-bottom: 1px solid var(--gray-300);
-          color: var(--foreground);
+          text-align: left;
         }
+
         th {
           background: var(--bg-card);
+          color: var(--foreground);
         }
+
         .uid {
           font-size: 0.85rem;
           opacity: 0.7;
         }
+
+        button {
+          padding: 6px 12px;
+          border-radius: var(--radius-sm);
+          border: none;
+          cursor: pointer;
+          font-family: var(--font-sans);
+        }
+
         .delete {
           background: var(--danger);
           color: var(--text-light);
-          padding: 6px 12px;
-          border: none;
-          border-radius: var(--radius-sm);
-          cursor: pointer;
         }
+
         .empty {
           text-align: center;
           padding: 16px;
           opacity: 0.6;
         }
+
+        @media (max-width: 768px) {
+          th,
+          td {
+            padding: 8px;
+            font-size: 0.9rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .search {
+            max-width: 100%;
+          }
+        }
       `}</style>
     </>
   );
+}
+
+// Server-side fetching
+export async function getServerSideProps() {
+  try {
+    const docRef = doc(db, "userdate", "data");
+    const snap = await getDoc(docRef);
+
+    let users = [];
+    if (snap.exists()) {
+      const data = snap.data();
+      users = Object.keys(data).map((key) => ({
+        key,
+        ...data[key],
+      }));
+    }
+
+    return { props: { users } };
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return { props: { users: [] } };
+  }
 }
