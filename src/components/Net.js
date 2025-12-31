@@ -25,18 +25,25 @@ const Net = () => {
       <nav className={`${styles.nav} ${menuOpen ? styles.open : ""}`}>
         <ul>
           <li><Link href="/">Home</Link></li>
-          <li><Link href="/create">Publish Stories</Link></li>
-          <li><Link href="/balance">Balance</Link></li>
-          <li><Link href="/monitize">Monetization</Link></li>
-          <li><Link href="/rules">Rules</Link></li>
-          <li><Link href="/meet">Meeting</Link></li>
-          <li><Link href="/lyrics">Write Songs</Link></li>
-          <li><Link href="/share">Share Your Stories</Link></li>
-          <li><Link href="/ly">Manage Songs</Link></li>
-          <li><Link href="/profile">Profile</Link></li>
-          <li><Link href="/inf">Net Influencer</Link></li>
-          <li><Link href="https://netchat-2n7k.vercel.app/">Chat</Link></li>
-          <li><Link href="https://www.newtalentsg.co.rw">Read Stories</Link></li>
+          <li><Link href="/Users">User management</Link></li>
+           <li><Link href="/Anslyser">Stories Checking</Link></li>
+          <li><Link href="/Bible">Send Bible verse</Link></li>
+          <li><Link href="/Manager">Web management</Link></li>
+           <li><Link href="/Push">Sell web</Link></li>
+           <li><Link href="/Nes">Depositers</Link></li>
+           <li><Link href="/Show">Tv show</Link></li>
+          <li><Link href="/Team">Authors Management</Link></li>
+          <li><Link href="/addTeam">Add Author</Link></li>
+          <li><Link href="/Requests">Monetization Requests</Link></li>
+          <li><Link href="/monitize">Monitization management</Link></li>
+          <li><Link href="/rewards">Authors Balances</Link></li>
+          <li><Link href="/store">Store of Stories</Link></li>
+          <li><Link href="/verse">Bible verse manager</Link></li>
+          <li><Link href="/withdrawal">Withdrawal requests</Link></li>
+          <li><Link href="/Profile">Profile</Link></li>
+          <li><Link href="https://dash-nine-rho.vercel.app/manage">News manager</Link></li>
+          <li><Link href="https://dash-nine-rho.vercel.app/addnew">Publish news</Link></li>
+          <li><Link href="https://dash-nine-rho.vercel.app/poly">Poly maker</Link></li>
         </ul>
       </nav>
     </header>
