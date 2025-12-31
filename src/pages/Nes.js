@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { db } from "@/components/firebase";
 import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useTheme } from "@/components/theme";
-import Net from "@/components/Net";
+
 
 export default function NESPage({ depositersServer }) {
   const { theme } = useTheme();
@@ -55,7 +55,7 @@ export default function NESPage({ depositersServer }) {
 
   return (
     <div className="container">
-      <Net />
+      
       <div className="giver">
         <h1>Management of NES</h1>
         <h2>Depositors</h2>
