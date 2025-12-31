@@ -14,7 +14,7 @@ export default function WithdrawalPage({ withdrawersServer }) {
   const [selectedData, setSelectedData] = useState(null);
   const [search, setSearch] = useState("");
 
-  // Filter withdrawers by search
+  // Filter withdrawers
   const filteredWithdrawers = withdrawers.filter(w =>
     w.id.toLowerCase().includes(search.toLowerCase())
   );
@@ -77,7 +77,7 @@ export default function WithdrawalPage({ withdrawersServer }) {
             <option key={w.id} value={w.id}>{w.id}</option>
           ))}
         </select>
-        <button onClick={loadDocument}>Show</button>
+        <button className={styles.btn} onClick={loadDocument}>Show</button>
       </div>
 
       {selectedData && (
@@ -109,7 +109,7 @@ export default function WithdrawalPage({ withdrawersServer }) {
                     : "N/A"}
                 </td>
                 <td>
-                  <button onClick={updateNES}>Update NES</button>
+                  <button className={styles.btn} onClick={updateNES}>Update NES</button>
                 </td>
               </tr>
             </tbody>
