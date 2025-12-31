@@ -1,31 +1,7 @@
-
 import Net from "@/components/Net";
-import { db } from "@/components/firebase";
-import { doc, getDoc } from "firebase/firestore";
 import { useState } from "react";
-
-export async function getServerSideProps() {
-  try {
-    const docRef = doc(db, "userdate", "data");
-    const snap = await getDoc(docRef);
-
-    let users = [];
-    if (snap.exists()) {
-      const data = snap.data();
-      users = Object.keys(data).map((key) => ({
-        key,
-        ...data[key],
-      }));
-    }
-
-    return {
-      props: { users },
-    };
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    return { props: { users: [] } };
-  }
-}
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/components/firebase";
 
 export default function UsersPage({ users }) {
   const [data, setData] = useState(users);
@@ -39,11 +15,14 @@ export default function UsersPage({ users }) {
     if (!confirm("Ushaka gusiba uyu user burundu?")) return;
 
     try {
-      await fetch("/api/delete-user", {
+      const res = await fetch("/api/delete-user", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ uid: user.uid, docKey: user.key }),
       });
+
+      if (!res.ok) throw new Error("Failed to delete");
+
       setData((prev) => prev.filter((u) => u.key !== user.key));
     } catch (error) {
       alert("Hari ikibazo cyo gusiba user.");
@@ -57,6 +36,7 @@ export default function UsersPage({ users }) {
 
       <div className="wrapper">
         <h1>Abakoresha (Users)</h1>
+
         <input
           className="search"
           placeholder="Shakisha user..."
@@ -103,10 +83,9 @@ export default function UsersPage({ users }) {
         </div>
       </div>
 
+      {/* ===== CSS ===== */}
       <style jsx>{`
         .wrapper {
-          margin-top: 70px;
-          margin-bottom: 130px;
           padding: var(--space-lg);
           background: var(--background);
           color: var(--foreground);
@@ -195,4 +174,26 @@ export default function UsersPage({ users }) {
       `}</style>
     </>
   );
+}
+
+// Server-side fetching
+export async function getServerSideProps() {
+  try {
+    const docRef = doc(db, "userdate", "data");
+    const snap = await getDoc(docRef);
+
+    let users = [];
+    if (snap.exists()) {
+      const data = snap.data();
+      users = Object.keys(data).map((key) => ({
+        key,
+        ...data[key],
+      }));
+    }
+
+    return { props: { users } };
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return { props: { users: [] } };
+  }
 }
