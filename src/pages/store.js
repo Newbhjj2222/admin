@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { db } from "@/components/firebase";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { useTheme } from "@/components/theme";
-import Net from "@/components/Net";
+
 
 /* ======================
    🧠 Helper: text → HTML
@@ -53,7 +53,7 @@ export default function Store({ stories }) {
 
   return (
     <div className="container">
-      <Net />
+      
 
       {/* 🔽 SELECT STORY */}
       <div className="selectBox">
