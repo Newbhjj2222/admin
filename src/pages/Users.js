@@ -155,144 +155,181 @@ export default function UsersPage({ users }) {
 
       {/* ===== CSS ===== */}
       <style jsx>{`
-        .wrapper {
-          margin-top: 70px;
-          margin-bottom: 120px;
-          padding: var(--space-lg);
-          background: var(--background);
-          color: var(--foreground);
-        }
+/* Wrapper na search */
+.wrapper {
+  margin-top: 70px;
+  margin-bottom: 120px;
+  padding: var(--space-lg);
+  background: var(--background);
+  color: var(--foreground);
+  min-height: 100vh;
+}
 
-        h1 {
-          margin-bottom: var(--space-md);
-        }
+.wrapper h1 {
+  margin-bottom: var(--space-md);
+  font-size: var(--text-2xl);
+}
 
-        .search {
-          width: 100%;
-          max-width: 360px;
-          padding: var(--space-sm);
-          border-radius: var(--radius-sm);
-          border: 1px solid var(--gray-300);
-          margin-bottom: var(--space-md);
-          background: var(--bg-card);
-          color: var(--foreground);
-        }
+.search {
+  width: 100%;
+  max-width: 360px;
+  padding: var(--space-sm);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-300);
+  margin-bottom: var(--space-md);
+  background: var(--bg-card);
+  color: var(--foreground);
+}
 
-        .tableWrap {
-          overflow-x: auto;
-        }
+/* Table responsive */
+.tableWrap {
+  overflow-x: auto;
+}
 
-        table {
-          width: 100%;
-          border-collapse: collapse;
-        }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
 
-        th,
-        td {
-          padding: 12px;
-          border-bottom: 1px solid var(--gray-300);
-          text-align: left;
-        }
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid var(--gray-300);
+  text-align: left;
+}
 
-        th {
-          background: var(--bg-card);
-        }
+th {
+  background: var(--bg-light);
+}
 
-        .uid {
-          font-size: 0.85rem;
-          opacity: 0.7;
-        }
+.uid {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
 
-        button {
-          padding: 6px 12px;
-          border-radius: var(--radius-sm);
-          border: none;
-          cursor: pointer;
-          font-family: var(--font-sans);
-        }
+button {
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
 
-        .edit {
-          background: var(--primary);
-          color: var(--text-light);
-          margin-right: 6px;
-        }
+.edit {
+  background: var(--primary);
+  color: var(--text-light);
+  margin-right: 6px;
+}
 
-        .delete {
-          background: var(--danger);
-          color: var(--text-light);
-        }
+.delete {
+  background: var(--danger);
+  color: var(--text-light);
+}
 
-        .empty {
-          text-align: center;
-          padding: 16px;
-          opacity: 0.6;
-        }
+.empty {
+  text-align: center;
+  padding: 16px;
+  opacity: 0.6;
+}
 
-        /* MODAL */
-        .modal {
-          position: fixed;
-          inset: 0;
-          background: var(--bg-overlay);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 9999;
-        }
+/* =========================
+   MODAL & OVERLAY
+========================= */
+.modal {
+  position: fixed;        /* floating hejuru yibindi */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;          /* center modalBox */
+  align-items: center;    /* vertical center */
+  justify-content: center; /* horizontal center */
+  background: var(--bg-overlay); /* overlay */
+  z-index: 9999;          /* hejuru ya byose */
+}
 
-        .modalBox {
-          background: var(--background);
-          padding: var(--space-lg);
-          border-radius: var(--radius-lg);
-          width: 100%;
-          max-width: 400px;
-          box-shadow: var(--shadow-lg);
-        }
+.modalBox {
+  background: var(--background);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  animation: modalIn 0.3s ease-out;
+}
 
-        .modalBox input {
-          width: 100%;
-          padding: var(--space-sm);
-          margin-bottom: var(--space-md);
-          background: var(--bg-card);
-          border: 1px solid var(--gray-300);
-          color: var(--foreground);
-        }
+.modalBox input {
+  width: 100%;
+  padding: var(--space-sm);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-300);
+  background: var(--bg-card);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
 
-        .modalBtns {
-          display: flex;
-          justify-content: flex-end;
-          gap: var(--space-sm);
-        }
+.modalBtns {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+}
 
-        .save {
-          background: var(--primary);
-          color: var(--text-light);
-        }
+.modalBtns .save {
+  background: var(--primary);
+  color: var(--text-light);
+}
 
-        @media (max-width: 768px) {
-          th,
-          td {
-            padding: 8px;
-            font-size: 0.9rem;
-          }
+.modalBtns button {
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+}
 
-          .modalBox {
-            padding: var(--space-md);
-          }
+/* Modal animation */
+@keyframes modalIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 
-          .modalBox input {
-            padding: var(--space-xs);
-          }
-        }
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+  th, td {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
 
-        @media (max-width: 480px) {
-          .search {
-            max-width: 100%;
-          }
+  .modalBox {
+    padding: var(--space-md);
+  }
 
-          .modalBox {
-            width: 90%;
-            padding: var(--space-md);
-          }
+  .modalBox input {
+    padding: var(--space-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .search {
+    max-width: 100%;
+  }
+
+  .modalBox {
+    width: 90%;
+    padding: var(--space-md);
+  }
         }
       `}</style>
     </>
