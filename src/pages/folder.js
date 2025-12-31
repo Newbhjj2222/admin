@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { db } from "@/components/firebase";
 import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { useTheme } from "@/components/theme";
-import Net from "@/components/Net";
 
 export default function FolderPage({ foldersServer }) {
   const { theme } = useTheme();
@@ -64,7 +63,7 @@ export default function FolderPage({ foldersServer }) {
 
   return (
     <div className="container">
-      <Net />
+      
       <div className="giver">
         <h1>Folders Manager</h1>
 
