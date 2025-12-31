@@ -1,0 +1,100 @@
+.container {
+  padding: 20px;
+  margin-top: 70px;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+.giver {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-card);
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-md);
+}
+
+.documentSelect, .searchInput {
+  padding: 6px 10px;
+  margin: 4px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-300);
+  font-size: var(--text-base);
+  background: var(--bg-card);
+  color: var(--foreground);
+}
+
+button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: var(--text-light);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: var(--primary-dark);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.withdrawalTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+  box-shadow: var(--shadow-sm);
+}
+
+.withdrawalTable th, .withdrawalTable td {
+  border: 1px solid var(--gray-300);
+  padding: 10px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.withdrawalTable th {
+  background: var(--primary);
+  color: var(--text-light);
+  font-weight: bold;
+}
+
+.withdrawalTable td {
+  background: var(--bg-card);
+  color: var(--foreground);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .withdrawalTable th, .withdrawalTable td {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .withdrawalTable th, .withdrawalTable td {
+    font-size: 0.85rem;
+    padding: 6px;
+  }
+  .giver {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .withdrawalTable th, .withdrawalTable td {
+    font-size: 0.8rem;
+    padding: 4px;
+  }
+}
