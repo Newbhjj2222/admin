@@ -19,7 +19,6 @@ import {
 } from "firebase/firestore";
 
 import styles from "@/styles/index.module.css";
-import Net from "@/components/Net";
 import Card from "@/components/Card";
 import { FaEye, FaComments, FaEdit, FaTrash } from "react-icons/fa";
 
@@ -85,7 +84,7 @@ export default function Home({ initialPosts, totalPosts, totalViews }) {
       </Head>
 
       <div className={styles.container}>
-        <Net />
+      
         <Card />
 
         {/* STATS */}
