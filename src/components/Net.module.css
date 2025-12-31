@@ -1,3 +1,4 @@
+
 .header {
   width: 100%;
   padding: 16px 24px;
@@ -12,6 +13,7 @@
   z-index: 100;
 }
 
+/* LOGO */
 .logo a {
   font-size: var(--text-xl);
   font-weight: bold;
@@ -19,29 +21,38 @@
   text-decoration: none;
 }
 
+/* MENU ICON (Mobile) */
 .menuIcon {
   display: none;
   cursor: pointer;
+  position: absolute;
   right: 18px;
   color: var(--foreground);
 }
 
-/* NAVIGATION */
+/* -------------------------------
+   NAVIGATION
+---------------------------------*/
+.nav {
+  display: flex;
+  align-items: center;
+}
+
 .nav ul {
-  overflow-x: scroll; /* enable horizontal scrolling */
-  white-space: nowrap; /* ibi birinda ko text cyangwa elements zipfundika */
   display: flex;
   gap: 24px;
   list-style: none;
   margin: 0;
   padding: 0;
+  overflow-x: auto; /* horizontal scroll if items exceed width */
+  white-space: nowrap;
 }
 
 .nav ul li a {
   text-decoration: none;
   color: var(--foreground);
   font-weight: 500;
-  font-size: 8px;
+  font-size: 14px; /* readable font */
   transition: color 0.3s;
 }
 
@@ -49,12 +60,17 @@
   color: var(--primary);
 }
 
-/* MOBILE */
+/* -------------------------------
+   MOBILE STYLES
+---------------------------------*/
 @media (max-width: 992px) {
+
+  /* Show menu icon */
   .menuIcon {
     display: block;
   }
 
+  /* Mobile nav container */
   .nav {
     position: absolute;
     top: 100%;
@@ -68,16 +84,18 @@
     border-top: 1px solid var(--gray-300);
   }
 
+  /* Mobile open state */
   .nav.open {
-    height: 400px; 
-    overflow-y: scroll; /* enable vertical scrolling *//* cukup tinggi kuri menu */
+    max-height: 400px; /* adjust as needed */
+    overflow-y: auto;  /* vertical scroll for long lists */
   }
 
+  /* Mobile menu list */
   .nav ul {
     flex-direction: column;
     gap: 16px;
-    overflow-y: scroll; 
     padding: 16px;
+    overflow-x: hidden; /* disable horizontal scroll on mobile */
   }
 
   .nav ul li a {
@@ -85,10 +103,16 @@
   }
 }
 
-/* Desktop adjustments */
+/* -------------------------------
+   DESKTOP ADJUSTMENTS
+---------------------------------*/
 @media (min-width: 993px) {
   .nav {
     display: flex;
     align-items: center;
+  }
+  .nav ul {
+    overflow-x: auto; /* horizontal scroll if too many items */
+    white-space: nowrap;
   }
 }
