@@ -85,10 +85,7 @@ export default function WithdrawalPage({ withdrawersServer }) {
               <tr>
                 <th>Username</th>
                 <th>Phone</th>
-                <th>NES Requested</th>
-                <th>Total NES</th>
-                <th>RWF Value</th>
-                <th>Status</th>
+                <th>NES</th>
                 <th>Time</th>
                 <th>Action</th>
               </tr>
@@ -98,9 +95,6 @@ export default function WithdrawalPage({ withdrawersServer }) {
                 <td>{selectedData.username || "N/A"}</td>
                 <td>{selectedData.phone || "N/A"}</td>
                 <td>{selectedData.nesRequested || "N/A"}</td>
-                <td>{selectedData.nesTotal || "N/A"}</td>
-                <td>{selectedData.rwfValue || "N/A"}</td>
-                <td>{selectedData.status || "Pending"}</td>
                 <td>
                   {selectedData.createdAt?.toDate
                     ? selectedData.createdAt.toDate().toLocaleString()
