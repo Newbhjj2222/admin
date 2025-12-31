@@ -112,7 +112,7 @@ export default function Push() {
             type="url"
             placeholder="Preview URL (https://...)"
             value={previewUrl}
-            onChange={(e) => setPreviewUrl(e.target.value)}
+            onChange={(e) => setPreviewUarl(e.target.value)}
             required
           />
 
@@ -212,7 +212,7 @@ export default function Push() {
 
         @media (max-width: 480px) {
           .push-container {
-            margin: 20px 10px;
+            margin-top: 70px;
             padding: 16px;
           }
 
