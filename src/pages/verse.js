@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { collection, getDocs, deleteDoc, doc, orderBy, query } from "firebase/firestore";
 import { db } from "@/components/firebase";
 import { useTheme } from "@/components/theme";
-import Net from "@/components/Net";
+
 
 export default function Verse() {
   const { theme } = useTheme();
@@ -41,7 +41,7 @@ export default function Verse() {
 
   return (
     <div className="container">
-      <Net />
+      
 
       <h2>📖 Bible Verses</h2>
 
