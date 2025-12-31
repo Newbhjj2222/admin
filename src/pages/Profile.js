@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from "react";
-import Net from "@/components/Net";
 import { db } from "@/components/firebase";
 import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
 import { FaCamera, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
@@ -62,7 +61,7 @@ export default function Profile({ username, userData, layID, status }) {
 
   return (
     <>
-      <Net />
+      
 
       <div className="container">
         <div className="profileCard">
