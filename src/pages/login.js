@@ -6,7 +6,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "@/components/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import Cookies from "js-cookie";
-import Net from "@/components/Net";
+
 
 const Login = () => {
   const router = useRouter();
@@ -65,7 +65,7 @@ const Login = () => {
 
   return (
     <>
-      <Net />
+      
 
       <div className="loginWrapper">
         <div className="container">
