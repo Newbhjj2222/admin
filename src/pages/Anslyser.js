@@ -13,7 +13,7 @@ import {
   Legend,
 } from "chart.js";
 import { useTheme } from "@/components/theme";
-import Net from "@/components/Net";
+
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
@@ -91,7 +91,7 @@ export default function Analyser({ stories }) {
 
   return (
     <div className="page">
-      <Net />
+      
 
       <div className="analysis">
         <h1>Isuzuma ry'Inkuru</h1>
