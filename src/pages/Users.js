@@ -75,6 +75,7 @@ export default function UsersPage({ users }) {
         <input
           className="search"
           placeholder="Shakisha user..."
+          value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
 
@@ -89,28 +90,29 @@ export default function UsersPage({ users }) {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((u) => (
-                <tr key={u.key}>
-                  <td>{u.fName}</td>
-                  <td>{u.email}</td>
-                  <td className="uid">{u.uid}</td>
-                  <td>
-                    <button
-                      className="edit"
-                      onClick={() => setEditing({ ...u })}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="delete"
-                      onClick={() => handleDelete(u)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {filtered.length === 0 && (
+              {filtered.length ? (
+                filtered.map((u) => (
+                  <tr key={u.key}>
+                    <td>{u.fName}</td>
+                    <td>{u.email}</td>
+                    <td className="uid">{u.uid}</td>
+                    <td>
+                      <button
+                        className="edit"
+                        onClick={() => setEditing({ ...u })}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="delete"
+                        onClick={() => handleDelete(u)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
                 <tr>
                   <td colSpan="4" className="empty">
                     Nta user wabonetse
@@ -126,18 +128,19 @@ export default function UsersPage({ users }) {
         <div className="modal">
           <div className="modalBox">
             <h3>Edit User</h3>
-
             <input
               value={editing.fName}
               onChange={(e) =>
                 setEditing({ ...editing, fName: e.target.value })
               }
+              placeholder="Izina"
             />
             <input
               value={editing.email}
               onChange={(e) =>
                 setEditing({ ...editing, email: e.target.value })
               }
+              placeholder="Email"
             />
 
             <div className="modalBtns">
@@ -153,23 +156,25 @@ export default function UsersPage({ users }) {
       {/* ===== CSS ===== */}
       <style jsx>{`
         .wrapper {
-          padding: 24px;
+          margin-top: 70px;
+          margin-bottom: 120px;
+          padding: var(--space-lg);
           background: var(--background);
           color: var(--foreground);
         }
 
         h1 {
-          margin-bottom: 16px;
+          margin-bottom: var(--space-md);
         }
 
         .search {
           width: 100%;
-          max-width: 320px;
-          padding: 10px;
+          max-width: 360px;
+          padding: var(--space-sm);
           border-radius: var(--radius-sm);
           border: 1px solid var(--gray-300);
-          margin-bottom: 16px;
-          background: var(--bg-light);
+          margin-bottom: var(--space-md);
+          background: var(--bg-card);
           color: var(--foreground);
         }
 
@@ -190,35 +195,36 @@ export default function UsersPage({ users }) {
         }
 
         th {
-          background: var(--bg-light);
+          background: var(--bg-card);
         }
 
         .uid {
-          font-size: 0.8rem;
+          font-size: 0.85rem;
           opacity: 0.7;
         }
 
         button {
-          padding: 6px 10px;
+          padding: 6px 12px;
           border-radius: var(--radius-sm);
           border: none;
           cursor: pointer;
+          font-family: var(--font-sans);
         }
 
         .edit {
           background: var(--primary);
-          color: #fff;
+          color: var(--text-light);
           margin-right: 6px;
         }
 
         .delete {
           background: var(--danger);
-          color: #fff;
+          color: var(--text-light);
         }
 
         .empty {
           text-align: center;
-          padding: 20px;
+          padding: 16px;
           opacity: 0.6;
         }
 
@@ -226,25 +232,27 @@ export default function UsersPage({ users }) {
         .modal {
           position: fixed;
           inset: 0;
-          background: rgba(0, 0, 0, 0.5);
+          background: var(--bg-overlay);
           display: flex;
           align-items: center;
           justify-content: center;
+          z-index: 9999;
         }
 
         .modalBox {
           background: var(--background);
-          padding: 24px;
+          padding: var(--space-lg);
           border-radius: var(--radius-lg);
           width: 100%;
           max-width: 400px;
+          box-shadow: var(--shadow-lg);
         }
 
         .modalBox input {
           width: 100%;
-          padding: 10px;
-          margin-bottom: 12px;
-          background: var(--bg-light);
+          padding: var(--space-sm);
+          margin-bottom: var(--space-md);
+          background: var(--bg-card);
           border: 1px solid var(--gray-300);
           color: var(--foreground);
         }
@@ -252,19 +260,38 @@ export default function UsersPage({ users }) {
         .modalBtns {
           display: flex;
           justify-content: flex-end;
-          gap: 10px;
+          gap: var(--space-sm);
         }
 
         .save {
           background: var(--primary);
-          color: #fff;
+          color: var(--text-light);
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
           th,
           td {
             padding: 8px;
             font-size: 0.9rem;
+          }
+
+          .modalBox {
+            padding: var(--space-md);
+          }
+
+          .modalBox input {
+            padding: var(--space-xs);
+          }
+        }
+
+        @media (max-width: 480px) {
+          .search {
+            max-width: 100%;
+          }
+
+          .modalBox {
+            width: 90%;
+            padding: var(--space-md);
           }
         }
       `}</style>
