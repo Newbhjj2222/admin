@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -24,37 +24,42 @@ const Login = () => {
     }
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
       const docRef = doc(db, "userdate", "data");
       const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        let found = false;
-
-        for (const key in data) {
-          const userData = data[key];
-          if (userData.email === email) {
-            const fName = userData.fName || "Unknown";
-            Cookies.set("username", fName, { expires: 7 });
-            found = true;
-            break;
-          }
-        }
-
-        if (found) {
-          setMessage("Winjiye neza!");
-          router.push("/");
-        } else {
-          setMessage("Email ntiyabonywe muri Firestore.");
-        }
-      } else {
+      if (!docSnap.exists()) {
         setMessage("Nta document ibonetse muri Firestore.");
+        return;
       }
+
+      const data = docSnap.data();
+      let found = false;
+
+      for (const key in data) {
+        if (data[key].email === email) {
+          Cookies.set("username", data[key].fName || "Admin", {
+            expires: 7,
+          });
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        setMessage("Email ntiyabonywe muri Firestore.");
+        return;
+      }
+
+      setMessage("Winjiye neza ✅");
+      router.push("/");
     } catch (error) {
-      setMessage("Injira ntibishobotse: " + error.message);
+      setMessage("Injira ntibishobotse ❌");
     }
   };
 
@@ -62,126 +67,121 @@ const Login = () => {
     <>
       <Net />
 
-      <div className="container">
-        <h2 className="loginTitle">Sign In</h2>
+      <div className="loginWrapper">
+        <div className="container">
+          <h2 className="loginTitle">Sign In</h2>
 
-        <form onSubmit={handleLogin}>
-          {message && <div className="messageDiv">{message}</div>}
+          <form onSubmit={handleLogin}>
+            {message && <div className="message">{message}</div>}
 
-          <div className="inputGroup">
-            <i className="inputIcon fas fa-envelope"></i>
-            <input
-              type="email"
-              placeholder="Email"
-              required
-              className="inputField"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
+            <div className="inputGroup">
+              <input
+                type="email"
+                placeholder="Email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
 
-          <div className="inputGroup">
-            <i className="inputIcon fas fa-lock"></i>
-            <input
-              type="password"
-              placeholder="Password"
-              required
-              className="inputField"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+            <div className="inputGroup">
+              <input
+                type="password"
+                placeholder="Password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
 
-          <button type="submit" className="btn">
-            Sign In
-          </button>
-        </form>
+            <button type="submit" className="btn">
+              Sign In
+            </button>
+          </form>
 
-        <p className="registerLink">
-          Niba nta konti ya author ufite twandikire WhatsApp kuri{" "}
-          <strong>+250722319367</strong>
-        </p>
+          <p className="registerLink">
+            Niba nta konti ya author ufite twandikire WhatsApp kuri{" "}
+            <strong>+250722319367</strong>
+          </p>
+        </div>
       </div>
 
-      {/* ===== CSS IMBERE MURI FILE ===== */}
+      {/* =========================
+          CSS (DARK / LIGHT + RESPONSIVE)
+      ========================== */}
       <style jsx>{`
-        .container {
-          max-width: 400px;
-          margin: 60px auto;
-          padding: 32px 24px;
+        .loginWrapper {
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 16px;
           background: var(--background);
+        }
+
+        .container {
+          width: 100%;
+          max-width: 420px;
+          padding: 32px 24px;
+          background: var(--bg-card);
           color: var(--foreground);
           border-radius: var(--radius-lg);
-          box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-          transition: all 0.3s ease-in-out;
+          box-shadow: var(--shadow-lg);
         }
 
         .loginTitle {
           text-align: center;
-          margin-bottom: 32px;
-          font-size: 1.8rem;
-          font-weight: 700;
+          margin-bottom: 24px;
+          font-size: var(--text-2xl);
+          font-family: var(--font-display);
           color: var(--primary);
         }
 
-        .messageDiv {
-          background: var(--danger-light);
-          color: var(--danger);
+        .message {
+          margin-bottom: 16px;
           padding: 12px;
           border-radius: var(--radius-sm);
-          margin-bottom: 16px;
+          background: var(--bg-muted);
+          color: var(--foreground);
           text-align: center;
-          font-weight: 500;
-          font-size: 0.95rem;
+          font-size: var(--text-sm);
         }
 
         .inputGroup {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          margin-bottom: 18px;
+          margin-bottom: 16px;
+        }
+
+        .inputGroup input {
+          width: 100%;
+          padding: 12px;
+          border-radius: var(--radius-md);
           border: 1px solid var(--gray-300);
-          border-radius: var(--radius-sm);
-          padding: 10px;
-          background: var(--bg-light);
-          transition: border 0.3s, box-shadow 0.3s;
-        }
-
-        .inputGroup:focus-within {
-          border-color: var(--primary);
-          box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-        }
-
-        .inputIcon {
-          color: var(--gray-500);
-          font-size: 1.1rem;
-          transition: color 0.3s;
-        }
-
-        .inputGroup:focus-within .inputIcon {
-          color: var(--primary);
-        }
-
-        .inputField {
-          border: none;
-          outline: none;
-          flex: 1;
-          padding: 10px;
-          font-size: 1rem;
-          background: transparent;
+          background: var(--background);
           color: var(--foreground);
+          font-size: var(--text-base);
+        }
+
+        .inputGroup input::placeholder {
+          color: var(--text-muted);
+        }
+
+        .inputGroup input:focus {
+          border-color: var(--primary);
+          box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
         }
 
         .btn {
           width: 100%;
-          padding: 14px;
+          padding: 12px;
+          margin-top: 8px;
           background: var(--primary);
-          color: #fff;
+          color: var(--text-light);
           border: none;
           border-radius: var(--radius-md);
-          cursor: pointer;
+          font-size: var(--text-base);
           font-weight: 600;
-          font-size: 1rem;
-          margin-top: 12px;
-          transition: background 0.3s, transform 0.2s;
+          cursor: pointer;
+          transition: background 0.3s ease, transform 0.2s ease;
         }
 
         .btn:hover {
@@ -195,34 +195,23 @@ const Login = () => {
 
         .registerLink {
           margin-top: 20px;
-          font-size: 0.95rem;
+          font-size: var(--text-sm);
           text-align: center;
           color: var(--text-muted);
         }
 
         .registerLink strong {
           color: var(--primary);
-          cursor: pointer;
         }
 
+        /* ---------- MOBILE ---------- */
         @media (max-width: 480px) {
           .container {
-            margin: 40px 16px;
-            padding: 28px 16px;
+            padding: 24px 16px;
           }
 
           .loginTitle {
-            font-size: 1.5rem;
-            margin-bottom: 24px;
-          }
-
-          .btn {
-            padding: 12px;
-            font-size: 0.95rem;
-          }
-
-          .inputField {
-            font-size: 0.95rem;
+            font-size: var(--text-xl);
           }
         }
       `}</style>
