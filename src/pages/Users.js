@@ -105,6 +105,8 @@ export default function UsersPage({ users }) {
 
       <style jsx>{`
         .wrapper {
+          margin-top: 70px;
+          margin-bottom: 130px;
           padding: var(--space-lg);
           background: var(--background);
           color: var(--foreground);
