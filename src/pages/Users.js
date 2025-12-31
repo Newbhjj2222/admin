@@ -1,22 +1,30 @@
+
 import Net from "@/components/Net";
 import { db } from "@/components/firebase";
-import { doc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { useState } from "react";
 
 export async function getServerSideProps() {
-  const snap = await db.collection("userdate").doc("data").get();
-  let users = [];
-  if (snap.exists) {
-    const data = snap.data();
-    users = Object.keys(data).map((key) => ({
-      key,
-      ...data[key],
-    }));
-  }
+  try {
+    const docRef = doc(db, "userdate", "data");
+    const snap = await getDoc(docRef);
 
-  return {
-    props: { users },
-  };
+    let users = [];
+    if (snap.exists()) {
+      const data = snap.data();
+      users = Object.keys(data).map((key) => ({
+        key,
+        ...data[key],
+      }));
+    }
+
+    return {
+      props: { users },
+    };
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return { props: { users: [] } };
+  }
 }
 
 export default function UsersPage({ users }) {
@@ -30,18 +38,23 @@ export default function UsersPage({ users }) {
   const handleDelete = async (user) => {
     if (!confirm("Ushaka gusiba uyu user burundu?")) return;
 
-    await fetch("/api/delete-user", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ uid: user.uid, docKey: user.key }),
-    });
-
-    setData((prev) => prev.filter((u) => u.key !== user.key));
+    try {
+      await fetch("/api/delete-user", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uid: user.uid, docKey: user.key }),
+      });
+      setData((prev) => prev.filter((u) => u.key !== user.key));
+    } catch (error) {
+      alert("Hari ikibazo cyo gusiba user.");
+      console.error(error);
+    }
   };
 
   return (
     <>
       <Net />
+
       <div className="wrapper">
         <h1>Abakoresha (Users)</h1>
         <input
@@ -69,7 +82,10 @@ export default function UsersPage({ users }) {
                     <td>{u.email}</td>
                     <td className="uid">{u.uid}</td>
                     <td>
-                      <button className="delete" onClick={() => handleDelete(u)}>
+                      <button
+                        className="delete"
+                        onClick={() => handleDelete(u)}
+                      >
                         Delete
                       </button>
                     </td>
@@ -89,8 +105,6 @@ export default function UsersPage({ users }) {
 
       <style jsx>{`
         .wrapper {
-          margin-top: 70px;
-          margin-bottom: 120px;
           padding: var(--space-lg);
           background: var(--background);
           color: var(--foreground);
@@ -109,7 +123,8 @@ export default function UsersPage({ users }) {
           padding: var(--space-sm);
           border-radius: var(--radius-sm);
           border: 1px solid var(--gray-300);
-          margin-bottom: var(--space-md);
+          margin: 0 auto var(--space-md) auto;
+          display: block;
           background: var(--bg-card);
           color: var(--foreground);
         }
