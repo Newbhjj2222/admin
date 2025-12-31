@@ -4,7 +4,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { db } from "@/components/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { FaBold, FaItalic, FaUnderline, FaHeading, FaListUl, FaLink, FaImage, FaSave, FaTrash, FaArrowLeft } from "react-icons/fa";
-import Net from "../components/Net";
 
 export default function EditorPage() {
   const router = useRouter();
@@ -97,7 +96,7 @@ export default function EditorPage() {
 
   return (
     <>
-      <Net />
+      
       <div className="editorContainer">
         {/* Toolbar */}
         <div className="toolbar">
