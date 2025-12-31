@@ -5,10 +5,8 @@ import { db } from "@/components/firebase";
 import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useTheme } from "@/components/theme";
 
-
 export default function WithdrawalPage({ withdrawersServer }) {
   const { theme } = useTheme();
-
   const [withdrawers, setWithdrawers] = useState(withdrawersServer || []);
   const [selectedId, setSelectedId] = useState("");
   const [selectedData, setSelectedData] = useState(null);
@@ -43,8 +41,8 @@ export default function WithdrawalPage({ withdrawersServer }) {
     if (newNES !== null && newNES.trim() !== "") {
       try {
         const docRef = doc(db, "withdrawers", selectedId);
-        await updateDoc(docRef, { amount: newNES });
-        setSelectedData(prev => ({ ...prev, amount: newNES }));
+        await updateDoc(docRef, { amount: Number(newNES) });
+        setSelectedData(prev => ({ ...prev, amount: Number(newNES) }));
         alert("NES yavuguruwe neza!");
       } catch (err) {
         console.error(err);
@@ -55,7 +53,6 @@ export default function WithdrawalPage({ withdrawersServer }) {
 
   return (
     <div className="container">
-      
       <div className="giver">
         <h1>Management of NES</h1>
         <h2>Withdrawers</h2>
@@ -88,19 +85,25 @@ export default function WithdrawalPage({ withdrawersServer }) {
               <tr>
                 <th>Username</th>
                 <th>Phone</th>
-                <th>NES</th>
+                <th>NES Requested</th>
+                <th>Total NES</th>
+                <th>RWF Value</th>
+                <th>Status</th>
                 <th>Time</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>{selectedData.ame || "N/A"}</td>
-                <td>{selectedData.fone || "N/A"}</td>
-                <td>{selectedData.amount || "N/A"}</td>
+                <td>{selectedData.username || "N/A"}</td>
+                <td>{selectedData.phone || "N/A"}</td>
+                <td>{selectedData.nesRequested || "N/A"}</td>
+                <td>{selectedData.nesTotal || "N/A"}</td>
+                <td>{selectedData.rwfValue || "N/A"}</td>
+                <td>{selectedData.status || "Pending"}</td>
                 <td>
-                  {selectedData.timestamp
-                    ? selectedData.timestamp.toDate().toLocaleDateString('en-GB', { day: '2-digit', month: 'long' })
+                  {selectedData.createdAt?.toDate
+                    ? selectedData.createdAt.toDate().toLocaleString()
                     : "N/A"}
                 </td>
                 <td>
@@ -161,7 +164,7 @@ export default function WithdrawalPage({ withdrawersServer }) {
         .withdrawalTable {
           width: 100%;
           border-collapse: collapse;
-          min-width: 600px;
+          min-width: 800px;
           box-shadow: var(--shadow-sm);
         }
         .withdrawalTable th, .withdrawalTable td {
