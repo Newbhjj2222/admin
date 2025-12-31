@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "@/components/firebase";
 import { useTheme } from "@/components/theme";
-import Net from "@/components/Net";
+
 
 export default function Bible() {
   const { theme } = useTheme();
@@ -44,7 +44,7 @@ export default function Bible() {
 
   return (
     <div className="container">
-      <Net />
+      
 
       <div className="card">
         <h1>Send Bible Verse</h1>
