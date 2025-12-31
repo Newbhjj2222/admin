@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Net from "@/components/Net";
 
 export default function UserPage() {
   const [users, setUsers] = useState([]);
@@ -62,7 +61,7 @@ export default function UserPage() {
 
   return (
     <>
-      <Net />
+      
 
       <div className="wrapper">
         <h1>Abakoresha (Users)</h1>
