@@ -117,6 +117,7 @@ export default function Profile({ username, userData, layID, status }) {
       {/* ================== CSS YUZUYE ================== */}
       <style jsx>{`
         .container {
+          margin-top: 70px;
           display: flex;
           justify-content: center;
           padding: 40px 16px;
