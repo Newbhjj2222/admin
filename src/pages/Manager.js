@@ -1,7 +1,6 @@
 "use client";
 
 import Head from "next/head";
-import Net from "@/components/Net";
 import { db } from "@/components/firebase";
 import {
   collection,
@@ -44,7 +43,7 @@ export default function Manager({ websites }) {
         <meta name="robots" content="noindex,nofollow" />
       </Head>
 
-      <Net />
+      
 
       <main className="manager">
         <h1>Websites Zose</h1>
