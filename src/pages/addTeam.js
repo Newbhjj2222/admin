@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/components/firebase";
 import { useTheme } from "@/components/theme";
-import Net from "@/components/Net";
 
 export default function AddTeam() {
   const { theme } = useTheme();
@@ -64,7 +63,7 @@ export default function AddTeam() {
 
   return (
     <div className="container">
-      <Net />
+      
 
       <div className="card">
         <h1>Add Team Member</h1>
