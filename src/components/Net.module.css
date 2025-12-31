@@ -28,6 +28,8 @@
 
 /* NAVIGATION */
 .nav ul {
+  overflow-x: scroll; /* enable horizontal scrolling */
+  white-space: nowrap; /* ibi birinda ko text cyangwa elements zipfundika */
   display: flex;
   gap: 24px;
   list-style: none;
@@ -39,6 +41,7 @@
   text-decoration: none;
   color: var(--foreground);
   font-weight: 500;
+  font-size: 8px;
   transition: color 0.3s;
 }
 
@@ -66,12 +69,14 @@
   }
 
   .nav.open {
-    max-height: 600px; /* cukup tinggi kuri menu */
+    height: 400px; 
+    overflow-y: scroll; /* enable vertical scrolling *//* cukup tinggi kuri menu */
   }
 
   .nav ul {
     flex-direction: column;
     gap: 16px;
+    overflow-y: scroll; 
     padding: 16px;
   }
 
