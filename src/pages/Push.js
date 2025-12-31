@@ -5,7 +5,7 @@ import { useState } from "react";
 import { db } from "../components/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { FaUpload, FaImage } from "react-icons/fa";
-import Net from "@/components/Net";
+
 
 const API_KEY = "d3b627c6d75013b8aaf2aac6de73dcb5";
 
@@ -79,7 +79,7 @@ export default function Push() {
         <meta name="robots" content="noindex,nofollow" />
       </Head>
 
-      <Net />
+      
 
       <main className="push-container">
         <form onSubmit={handleSubmit}>
