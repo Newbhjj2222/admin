@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { db } from "@/components/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { useTheme } from "@/components/theme";
-import Net from "@/components/Net";
 
 export default function Show() {
   const { theme } = useTheme();
@@ -36,7 +35,7 @@ export default function Show() {
 
   return (
     <div className="container">
-      <Net />
+      
       <h2>Ohereza Content na Video</h2>
 
       <form onSubmit={handleSubmit} className="form">
