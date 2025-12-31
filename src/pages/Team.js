@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/components/firebase";
 import { useTheme } from "@/components/theme";
-import Net from "@/components/Net";
 
 /* ======================
    🧩 PAGE
@@ -25,7 +24,7 @@ export default function Team({ members }) {
 
   return (
     <div className="container">
-      <Net />
+      
 
       <h1>Team Members</h1>
 
