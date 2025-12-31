@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { db } from "@/components/firebase";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { useTheme } from "@/components/theme";
-import Net from "@/components/Net";
+
 
 export default function Monetize({ initialAuthors }) {
   const { theme } = useTheme();
@@ -21,7 +21,7 @@ export default function Monetize({ initialAuthors }) {
 
   return (
     <div className="container">
-      <Net />
+      
       <h2>ABANDITSI BARI MONETIZE</h2>
 
       <div className="table-wrapper">
