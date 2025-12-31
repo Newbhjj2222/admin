@@ -1,16 +1,12 @@
 import Net from "@/components/Net";
 import { db } from "@/components/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc } from "firebase/firestore";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export async function getServerSideProps() {
-  const docRef = doc(db, "userdate", "data");
-  const snap = await getDoc(docRef);
-
+  const snap = await db.collection("userdate").doc("data").get();
   let users = [];
-
-  if (snap.exists()) {
+  if (snap.exists) {
     const data = snap.data();
     users = Object.keys(data).map((key) => ({
       key,
@@ -24,20 +20,30 @@ export async function getServerSideProps() {
 }
 
 export default function UsersPage({ users }) {
+  const [data, setData] = useState(users);
   const [search, setSearch] = useState("");
-  const router = useRouter();
 
-  const filtered = users.filter((u) =>
+  const filtered = data.filter((u) =>
     `${u.email} ${u.fName}`.toLowerCase().includes(search.toLowerCase())
   );
+
+  const handleDelete = async (user) => {
+    if (!confirm("Ushaka gusiba uyu user burundu?")) return;
+
+    await fetch("/api/delete-user", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ uid: user.uid, docKey: user.key }),
+    });
+
+    setData((prev) => prev.filter((u) => u.key !== user.key));
+  };
 
   return (
     <>
       <Net />
-
       <div className="wrapper">
         <h1>Abakoresha (Users)</h1>
-
         <input
           className="search"
           placeholder="Shakisha user..."
@@ -63,13 +69,8 @@ export default function UsersPage({ users }) {
                     <td>{u.email}</td>
                     <td className="uid">{u.uid}</td>
                     <td>
-                      <button
-                        className="edit"
-                        onClick={() =>
-                          router.push(`/change?key=${u.key}`)
-                        }
-                      >
-                        Edit
+                      <button className="delete" onClick={() => handleDelete(u)}>
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -95,10 +96,13 @@ export default function UsersPage({ users }) {
           color: var(--foreground);
           min-height: 100vh;
         }
+
         h1 {
           margin-bottom: var(--space-md);
           font-size: var(--text-2xl);
+          text-align: center;
         }
+
         .search {
           width: 100%;
           max-width: 360px;
@@ -109,9 +113,11 @@ export default function UsersPage({ users }) {
           background: var(--bg-card);
           color: var(--foreground);
         }
+
         .tableWrap {
           overflow-x: auto;
         }
+
         table {
           width: 100%;
           border-collapse: collapse;
@@ -119,19 +125,24 @@ export default function UsersPage({ users }) {
           border-radius: var(--radius-md);
           box-shadow: var(--shadow-sm);
         }
+
         th,
         td {
           padding: 12px;
           border-bottom: 1px solid var(--gray-300);
           text-align: left;
         }
+
         th {
-          background: var(--bg-light);
+          background: var(--bg-card);
+          color: var(--foreground);
         }
+
         .uid {
           font-size: 0.85rem;
           opacity: 0.7;
         }
+
         button {
           padding: 6px 12px;
           border-radius: var(--radius-sm);
@@ -139,15 +150,18 @@ export default function UsersPage({ users }) {
           cursor: pointer;
           font-family: var(--font-sans);
         }
-        .edit {
-          background: var(--primary);
+
+        .delete {
+          background: var(--danger);
           color: var(--text-light);
         }
+
         .empty {
           text-align: center;
           padding: 16px;
           opacity: 0.6;
         }
+
         @media (max-width: 768px) {
           th,
           td {
@@ -155,6 +169,7 @@ export default function UsersPage({ users }) {
             font-size: 0.9rem;
           }
         }
+
         @media (max-width: 480px) {
           .search {
             max-width: 100%;
