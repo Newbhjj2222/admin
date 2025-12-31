@@ -1,9 +1,11 @@
 // pages/withdrawal.js
 'use client';
+
 import React, { useState } from "react";
 import { db } from "@/components/firebase";
 import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useTheme } from "@/components/theme";
+import styles from "@/styles/Withdrawal.module.css";
 
 export default function WithdrawalPage({ withdrawersServer }) {
   const { theme } = useTheme();
@@ -12,7 +14,7 @@ export default function WithdrawalPage({ withdrawersServer }) {
   const [selectedData, setSelectedData] = useState(null);
   const [search, setSearch] = useState("");
 
-  // Filter withdrawers
+  // Filter withdrawers by search
   const filteredWithdrawers = withdrawers.filter(w =>
     w.id.toLowerCase().includes(search.toLowerCase())
   );
@@ -34,15 +36,15 @@ export default function WithdrawalPage({ withdrawersServer }) {
     }
   };
 
-  // Update NES (amount)
+  // Update NES
   const updateNES = async () => {
     if (!selectedId) return alert("Hitamo user mbere yo kuvugurura NES.");
     const newNES = prompt("Shyiramo agaciro gashya ka NES:");
     if (newNES !== null && newNES.trim() !== "") {
       try {
         const docRef = doc(db, "withdrawers", selectedId);
-        await updateDoc(docRef, { amount: Number(newNES) });
-        setSelectedData(prev => ({ ...prev, amount: Number(newNES) }));
+        await updateDoc(docRef, { nesRequested: Number(newNES) });
+        setSelectedData(prev => ({ ...prev, nesRequested: Number(newNES) }));
         alert("NES yavuguruwe neza!");
       } catch (err) {
         console.error(err);
@@ -52,8 +54,8 @@ export default function WithdrawalPage({ withdrawersServer }) {
   };
 
   return (
-    <div className="container">
-      <div className="giver">
+    <div className={styles.container}>
+      <div className={styles.giver}>
         <h1>Management of NES</h1>
         <h2>Withdrawers</h2>
 
@@ -62,13 +64,13 @@ export default function WithdrawalPage({ withdrawersServer }) {
           placeholder="Shaka username..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="searchInput"
+          className={styles.searchInput}
         />
 
         <select
           value={selectedId}
           onChange={(e) => setSelectedId(e.target.value)}
-          className="documentSelect"
+          className={styles.documentSelect}
         >
           <option value="">Hitamo User</option>
           {filteredWithdrawers.map(w => (
@@ -79,13 +81,16 @@ export default function WithdrawalPage({ withdrawersServer }) {
       </div>
 
       {selectedData && (
-        <div className="tableWrapper">
-          <table className="withdrawalTable">
+        <div className={styles.tableWrapper}>
+          <table className={styles.withdrawalTable}>
             <thead>
               <tr>
                 <th>Username</th>
                 <th>Phone</th>
-                <th>NES</th>
+                <th>NES Requested</th>
+                <th>Total NES</th>
+                <th>RWF Value</th>
+                <th>Status</th>
                 <th>Time</th>
                 <th>Action</th>
               </tr>
@@ -95,6 +100,9 @@ export default function WithdrawalPage({ withdrawersServer }) {
                 <td>{selectedData.username || "N/A"}</td>
                 <td>{selectedData.phone || "N/A"}</td>
                 <td>{selectedData.nesRequested || "N/A"}</td>
+                <td>{selectedData.nesTotal || "N/A"}</td>
+                <td>{selectedData.rwfValue || "N/A"}</td>
+                <td>{selectedData.status || "Pending"}</td>
                 <td>
                   {selectedData.createdAt?.toDate
                     ? selectedData.createdAt.toDate().toLocaleString()
@@ -108,96 +116,6 @@ export default function WithdrawalPage({ withdrawersServer }) {
           </table>
         </div>
       )}
-
-      <style jsx>{`
-        .container {
-          padding: 20px;
-          margin-top: 70px;
-          background: var(--background);
-          color: var(--foreground);
-          font-family: var(--font-sans);
-          min-height: 100vh;
-        }
-        .giver {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 10px;
-          background: var(--bg-card);
-          padding: 16px;
-          border-radius: var(--radius-lg);
-          margin-bottom: 20px;
-          box-shadow: var(--shadow-md);
-        }
-        .documentSelect, .searchInput {
-          padding: 6px 10px;
-          margin: 4px;
-          border-radius: var(--radius-sm);
-          border: 1px solid var(--gray-300);
-          font-size: var(--text-base);
-          background: var(--bg-card);
-          color: var(--foreground);
-        }
-        button {
-          padding: 6px 12px;
-          border: none;
-          border-radius: var(--radius-sm);
-          background: var(--primary);
-          color: var(--text-light);
-          cursor: pointer;
-          transition: background 0.2s;
-        }
-        button:hover {
-          background: var(--primary-dark);
-        }
-        .tableWrapper {
-          overflow-x: auto;
-          width: 100%;
-          margin-top: 20px;
-        }
-        .withdrawalTable {
-          width: 100%;
-          border-collapse: collapse;
-          min-width: 800px;
-          box-shadow: var(--shadow-sm);
-        }
-        .withdrawalTable th, .withdrawalTable td {
-          border: 1px solid var(--gray-300);
-          padding: 10px;
-          text-align: left;
-          white-space: nowrap;
-        }
-        .withdrawalTable th {
-          background: var(--primary);
-          color: var(--text-light);
-          font-weight: bold;
-        }
-        .withdrawalTable td {
-          background: var(--bg-card);
-          color: var(--foreground);
-        }
-        @media (max-width: 1024px) {
-          .withdrawalTable th, .withdrawalTable td {
-            font-size: 0.9rem;
-            padding: 8px;
-          }
-        }
-        @media (max-width: 768px) {
-          .withdrawalTable th, .withdrawalTable td {
-            font-size: 0.85rem;
-            padding: 6px;
-          }
-          .giver {
-            padding: 12px;
-          }
-        }
-        @media (max-width: 480px) {
-          .withdrawalTable th, .withdrawalTable td {
-            font-size: 0.8rem;
-            padding: 4px;
-          }
-        }
-      `}</style>
     </div>
   );
 }
