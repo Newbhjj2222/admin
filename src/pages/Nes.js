@@ -1,93 +1,54 @@
 // pages/nes.js
-'use client';
-import React, { useState } from "react";
 import { db } from "@/components/firebase";
-import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
-import { useTheme } from "@/components/theme";
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 
-
-export default function NESPage({ depositersServer }) {
-  const { theme } = useTheme();
-
-  const [depositers, setDepositors] = useState(depositersServer || []);
-  const [selectedId, setSelectedId] = useState("");
-  const [selectedData, setSelectedData] = useState(null);
-  const [search, setSearch] = useState("");
-
-  // Filter depositers based on search input
-  const filteredDepositors = depositers.filter(d =>
-    d.id.toLowerCase().includes(search.toLowerCase())
-  );
-
-  // Load document (client-side)
-  const loadDocument = async () => {
-    if (!selectedId) return alert("Hitamo User.");
-    try {
-      const docRef = doc(db, "depositers", selectedId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setSelectedData(docSnap.data());
-      } else {
-        alert("Document not found!");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error fetching document.");
-    }
-  };
-
-  // Update NES
-  const updateNES = async () => {
-    if (!selectedId) return alert("Hitamo user mbere yo kuvugurura NES.");
-    const newNES = prompt("Shyiramo agaciro gashya ka NES:");
-    if (newNES !== null && newNES.trim() !== "") {
-      try {
-        const docRef = doc(db, "depositers", selectedId);
-        await updateDoc(docRef, { nes: newNES });
-        setSelectedData(prev => ({ ...prev, nes: newNES }));
-        alert("NES yavuguruwe neza!");
-      } catch (err) {
-        console.error(err);
-        alert("Habaye ikosa mu kuvugurura NES.");
-      }
-    }
-  };
-
+export default function NESPage({
+  depositers,
+  selectedId,
+  selectedData,
+  message,
+}) {
   return (
     <div className="container">
-      
       <div className="giver">
         <h1>Management of NES</h1>
-        <h2>Depositors</h2>
 
-        <input
-          type="text"
-          placeholder="Shaka username..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="searchInput"
-        />
+        {message && <p className="message">{message}</p>}
 
-        <select
-          value={selectedId}
-          onChange={(e) => setSelectedId(e.target.value)}
-          className="documentSelect"
-        >
-          <option value="">Hitamo User</option>
-          {filteredDepositors.map(d => (
-            <option key={d.id} value={d.id}>{d.id}</option>
-          ))}
-        </select>
-        <button onClick={loadDocument}>Show</button>
+        {/* SEARCH + SELECT */}
+        <form method="GET">
+          <input
+            type="text"
+            name="search"
+            placeholder="Shaka username..."
+            className="searchInput"
+          />
+
+          <select name="user" className="documentSelect" defaultValue={selectedId || ""}>
+            <option value="">Hitamo User</option>
+            {depositers.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.id}
+              </option>
+            ))}
+          </select>
+
+          <button type="submit">Show</button>
+        </form>
       </div>
 
+      {/* TABLE */}
       {selectedData && (
         <div className="tableWrapper">
           <table className="nesTable">
             <thead>
               <tr>
-                
-                
                 <th>Plan</th>
                 <th>NES</th>
                 <th>Time</th>
@@ -96,15 +57,24 @@ export default function NESPage({ depositersServer }) {
             </thead>
             <tbody>
               <tr>
-                  <td>{selectedData.plan || "N/A"}</td>
+                <td>{selectedData.plan || "N/A"}</td>
                 <td>{selectedData.nes || "N/A"}</td>
                 <td>
                   {selectedData.timestamp
-                    ? selectedData.timestamp.toDate().toLocaleDateString('en-GB', { day: '2-digit', month: 'long' })
+                    ? selectedData.timestamp
                     : "N/A"}
                 </td>
                 <td>
-                  <button onClick={updateNES}>Update NES</button>
+                  <form method="POST">
+                    <input type="hidden" name="user" value={selectedId} />
+                    <input
+                      type="text"
+                      name="nes"
+                      placeholder="New NES"
+                      required
+                    />
+                    <button type="submit">Update</button>
+                  </form>
                 </td>
               </tr>
             </tbody>
@@ -112,93 +82,89 @@ export default function NESPage({ depositersServer }) {
         </div>
       )}
 
+      {/* ===== CSS ===== */}
       <style jsx>{`
         .container {
           padding: 20px;
           margin-top: 70px;
+          min-height: 100vh;
           background: var(--background);
           color: var(--foreground);
-          font-family: var(--font-sans);
-          min-height: 100vh;
         }
+
         .giver {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 10px;
           background: var(--bg-card);
           padding: 16px;
-          border-radius: var(--radius-lg);
+          border-radius: 12px;
           margin-bottom: 20px;
-          box-shadow: var(--shadow-md);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
-        .documentSelect, .searchInput {
-          padding: 6px 10px;
-          margin: 4px;
-          border-radius: var(--radius-sm);
-          border: 1px solid var(--gray-300);
-          font-size: var(--text-base);
-          background: var(--bg-card);
-          color: var(--foreground);
+
+        form {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          align-items: center;
         }
+
+        .searchInput,
+        .documentSelect,
+        input[type="text"] {
+          padding: 8px 10px;
+          border-radius: 6px;
+          border: 1px solid #334155;
+          background: #020617;
+          color: #e5e7eb;
+        }
+
         button {
-          padding: 6px 12px;
+          padding: 8px 14px;
           border: none;
-          border-radius: var(--radius-sm);
-          background: var(--primary);
-          color: var(--text-light);
+          border-radius: 6px;
+          background: #2563eb;
+          color: white;
           cursor: pointer;
-          transition: background 0.2s;
         }
+
         button:hover {
-          background: var(--primary-dark);
+          background: #1e40af;
         }
-        /* Table wrapper for horizontal scroll on mobile */
+
+        .message {
+          margin-bottom: 10px;
+          color: #22c55e;
+        }
+
         .tableWrapper {
           overflow-x: auto;
-          width: 100%;
-          margin-top: 20px;
         }
+
         .nesTable {
           width: 100%;
+          min-width: 700px;
           border-collapse: collapse;
-          min-width: 700px; /* ensures scroll on small screens */
-          box-shadow: var(--shadow-sm);
         }
-        .nesTable th, .nesTable td {
-          border: 1px solid var(--gray-300);
+
+        .nesTable th,
+        .nesTable td {
+          border: 1px solid #334155;
           padding: 10px;
-          text-align: left;
           white-space: nowrap;
         }
+
         .nesTable th {
-          background: var(--primary);
-          color: var(--text-light);
-          font-weight: bold;
+          background: #2563eb;
+          color: white;
         }
+
         .nesTable td {
-          background: var(--bg-card);
-          color: var(--foreground);
+          background: #020617;
         }
-        @media (max-width: 1024px) {
-          .nesTable th, .nesTable td {
-            font-size: 0.9rem;
-            padding: 8px;
-          }
-        }
+
         @media (max-width: 768px) {
-          .nesTable th, .nesTable td {
+          .nesTable th,
+          .nesTable td {
             font-size: 0.85rem;
-            padding: 6px;
-          }
-          .giver {
-            padding: 12px;
-          }
-        }
-        @media (max-width: 480px) {
-          .nesTable th, .nesTable td {
-            font-size: 0.8rem;
-            padding: 4px;
           }
         }
       `}</style>
@@ -206,18 +172,64 @@ export default function NESPage({ depositersServer }) {
   );
 }
 
-// ================= SSR =================
-export async function getServerSideProps() {
-  try {
-    const snapshot = await getDocs(collection(db, "depositers"));
-    const depositers = snapshot.docs.map(d => ({
-      id: d.id,
-      ...d.data(),
-    }));
+//
+// ================== SSR ==================
+//
+export async function getServerSideProps(context) {
+  const { query, req } = context;
+  const selectedId = query.user || null;
+  const search = query.search || "";
+  let message = null;
 
-    return { props: { depositersServer: depositers } };
-  } catch (err) {
-    console.error("Error fetching depositers:", err);
-    return { props: { depositersServer: [] } };
+  // HANDLE UPDATE (POST)
+  if (req.method === "POST") {
+    let body = "";
+    await new Promise((resolve) => {
+      req.on("data", (chunk) => (body += chunk));
+      req.on("end", resolve);
+    });
+
+    const params = new URLSearchParams(body);
+    const user = params.get("user");
+    const nes = params.get("nes");
+
+    if (user && nes) {
+      await updateDoc(doc(db, "depositers", user), { nes });
+      message = "NES yavuguruwe neza!";
+    }
   }
+
+  // FETCH ALL DEPOSITERS
+  const snap = await getDocs(collection(db, "depositers"));
+  let depositers = snap.docs.map((d) => ({ id: d.id }));
+
+  if (search) {
+    depositers = depositers.filter((d) =>
+      d.id.toLowerCase().includes(search.toLowerCase())
+    );
+  }
+
+  // FETCH SELECTED USER
+  let selectedData = null;
+  if (selectedId) {
+    const d = await getDoc(doc(db, "depositers", selectedId));
+    if (d.exists()) {
+      const data = d.data();
+      selectedData = {
+        ...data,
+        timestamp: data.timestamp
+          ? data.timestamp.toDate().toLocaleDateString("en-GB")
+          : null,
+      };
+    }
+  }
+
+  return {
+    props: {
+      depositers,
+      selectedId,
+      selectedData,
+      message,
+    },
+  };
 }
