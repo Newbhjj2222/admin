@@ -1,0 +1,113 @@
+.container {
+  padding: 20px;
+  margin-top: 60px;
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.giver {
+  background: var(--bg-card);
+  padding: 16px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-md);
+}
+
+.title {
+  margin: 0;
+}
+
+.searchInput {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--gray-300);
+  width: 100%;
+  max-width: 320px;
+}
+
+.primaryBtn {
+  padding: 8px 16px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 520px;
+}
+
+.table th {
+  background: var(--primary);
+  color: white;
+  padding: 10px;
+}
+
+.table td {
+  background: var(--bg-card);
+  padding: 10px;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.editBtn {
+  background: #0d6efd;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.hideBtn {
+  background: #ffc107;
+  color: #000;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.deleteBtn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.hiddenRow td {
+  opacity: 0.6;
+  background: #f8d7da;
+}
+
+.empty {
+  text-align: center;
+  padding: 16px;
+  opacity: 0.7;
+}
+
+/* 📱 Responsive */
+@media (max-width: 600px) {
+  .table {
+    min-width: 100%;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+}
