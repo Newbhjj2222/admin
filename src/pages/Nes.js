@@ -1,3 +1,4 @@
+
 // pages/nes.js
 import { db } from "@/components/firebase";
 import {
@@ -7,6 +8,7 @@ import {
   getDoc,
   updateDoc,
 } from "firebase/firestore";
+import styles from "@/styles/nes.module.css";
 
 export default function NESPage({
   depositers,
@@ -15,22 +17,26 @@ export default function NESPage({
   message,
 }) {
   return (
-    <div className="container">
-      <div className="giver">
+    <div className={styles.container}>
+      <div className={styles.giver}>
         <h1>Management of NES</h1>
 
-        {message && <p className="message">{message}</p>}
+        {message && <p className={styles.message}>{message}</p>}
 
         {/* SEARCH + SELECT */}
-        <form method="GET">
+        <form method="GET" className={styles.formRow}>
           <input
             type="text"
             name="search"
             placeholder="Shaka username..."
-            className="searchInput"
+            className={styles.searchInput}
           />
 
-          <select name="user" className="documentSelect" defaultValue={selectedId || ""}>
+          <select
+            name="user"
+            defaultValue={selectedId || ""}
+            className={styles.documentSelect}
+          >
             <option value="">Hitamo User</option>
             {depositers.map((d) => (
               <option key={d.id} value={d.id}>
@@ -39,14 +45,16 @@ export default function NESPage({
             ))}
           </select>
 
-          <button type="submit">Show</button>
+          <button type="submit" className={styles.btn}>
+            Show
+          </button>
         </form>
       </div>
 
       {/* TABLE */}
       {selectedData && (
-        <div className="tableWrapper">
-          <table className="nesTable">
+        <div className={styles.tableWrapper}>
+          <table className={styles.nesTable}>
             <thead>
               <tr>
                 <th>Plan</th>
@@ -59,21 +67,20 @@ export default function NESPage({
               <tr>
                 <td>{selectedData.plan || "N/A"}</td>
                 <td>{selectedData.nes || "N/A"}</td>
+                <td>{selectedData.timestamp || "N/A"}</td>
                 <td>
-                  {selectedData.timestamp
-                    ? selectedData.timestamp
-                    : "N/A"}
-                </td>
-                <td>
-                  <form method="POST">
+                  <form method="POST" className={styles.inlineForm}>
                     <input type="hidden" name="user" value={selectedId} />
                     <input
                       type="text"
                       name="nes"
                       placeholder="New NES"
                       required
+                      className={styles.input}
                     />
-                    <button type="submit">Update</button>
+                    <button type="submit" className={styles.btn}>
+                      Update
+                    </button>
                   </form>
                 </td>
               </tr>
@@ -81,93 +88,6 @@ export default function NESPage({
           </table>
         </div>
       )}
-
-      {/* ===== CSS ===== */}
-      <style jsx>{`
-        .container {
-          padding: 20px;
-          margin-top: 70px;
-          min-height: 100vh;
-          background: var(--background);
-          color: var(--foreground);
-        }
-
-        .giver {
-          background: var(--bg-card);
-          padding: 16px;
-          border-radius: 12px;
-          margin-bottom: 20px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        form {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-          align-items: center;
-        }
-
-        .searchInput,
-        .documentSelect,
-        input[type="text"] {
-          padding: 8px 10px;
-          border-radius: 6px;
-          border: 1px solid #334155;
-          background: #020617;
-          color: #e5e7eb;
-        }
-
-        button {
-          padding: 8px 14px;
-          border: none;
-          border-radius: 6px;
-          background: #2563eb;
-          color: white;
-          cursor: pointer;
-        }
-
-        button:hover {
-          background: #1e40af;
-        }
-
-        .message {
-          margin-bottom: 10px;
-          color: #22c55e;
-        }
-
-        .tableWrapper {
-          overflow-x: auto;
-        }
-
-        .nesTable {
-          width: 100%;
-          min-width: 700px;
-          border-collapse: collapse;
-        }
-
-        .nesTable th,
-        .nesTable td {
-          border: 1px solid #334155;
-          padding: 10px;
-          white-space: nowrap;
-        }
-
-        .nesTable th {
-          background: #2563eb;
-          color: white;
-        }
-
-        .nesTable td {
-          background: #020617;
-        }
-
-        @media (max-width: 768px) {
-          .nesTable th,
-          .nesTable td {
-            font-size: 0.85rem;
-          }
-        }
-      `}</style>
     </div>
   );
 }
@@ -194,7 +114,9 @@ export async function getServerSideProps(context) {
     const nes = params.get("nes");
 
     if (user && nes) {
-      await updateDoc(doc(db, "depositers", user), { nes });
+      await updateDoc(doc(db, "depositers", user), {
+        nes: Number(nes),
+      });
       message = "NES yavuguruwe neza!";
     }
   }
