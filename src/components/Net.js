@@ -34,7 +34,7 @@ const Net = () => {
            <li><Link href="https://admin-coral-five-19.vercel.app/Show">Tv show</Link></li>
           <li><Link href="https://admin-coral-five-19.vercel.app/Team">Authors Management</Link></li>
           <li><Link href="https://admin-coral-five-19.vercel.app/addTeam">Add Author</Link></li>
-          <li><Link href="https://admin-coral-five-19.vercel.app/Requests">Monetization Requests</Link></li>
+          <li><Link href="https://admin-coral-five-19.vercel.app/Request">Monetization Requests</Link></li>
           <li><Link href="https://admin-coral-five-19.vercel.app/monitize">Monitization management</Link></li>
           <li><Link href="https://admin-coral-five-19.vercel.app/rewards">Authors Balances</Link></li>
           <li><Link href="https://admin-coral-five-19.vercel.app/store">Store of Stories</Link></li>
