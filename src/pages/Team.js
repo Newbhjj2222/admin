@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/components/firebase";
 import { useTheme } from "@/components/theme";
+import styles from "@/styles/team.module.css";
 
 /* ======================
    🧩 PAGE
@@ -23,133 +24,47 @@ export default function Team({ members }) {
   };
 
   return (
-    <div className="container">
-      
-
-      <h1>Team Members</h1>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Team Members</h1>
 
       {team.length === 0 && (
-        <p className="empty">Nta Team Member iboneka</p>
+        <p className={styles.empty}>Nta Team Member iboneka</p>
       )}
 
       {/* 🧑‍🤝‍🧑 TEAM LIST */}
-      <div className="grid">
+      <div className={styles.grid}>
         {team.map((m) => (
-          <div className="card" key={m.id}>
-            <img src={m.photo} alt={m.name} />
+          <div className={styles.card} key={m.id}>
+            <img
+              src={m.photo}
+              alt={m.name}
+              className={styles.avatar}
+            />
 
-            <div className="info">
-              <h3>{m.name}</h3>
+            <div className={styles.info}>
+              <h3 className={styles.name}>{m.name}</h3>
 
               {m.whatsapp && (
                 <a
                   href={`https://wa.me/${m.whatsapp.replace(/\D/g, "")}`}
                   target="_blank"
+                  rel="noreferrer"
+                  className={styles.whatsapp}
                 >
                   {m.whatsapp}
                 </a>
               )}
             </div>
 
-            <button onClick={() => deleteMember(m.id)}>Delete</button>
+            <button
+              onClick={() => deleteMember(m.id)}
+              className={styles.deleteBtn}
+            >
+              Delete
+            </button>
           </div>
         ))}
       </div>
-
-      {/* 🎨 STYLES */}
-      <style jsx>{`
-        .container {
-          margin-top: 50px;
-          margin-bottom: 120px;
-          padding: 16px;
-          min-height: 100vh;
-          background: var(--background);
-          color: var(--foreground);
-          font-family: var(--font-sans);
-        }
-
-        h1 {
-          text-align: center;
-          margin-bottom: 24px;
-        }
-
-        .empty {
-          text-align: center;
-          opacity: 0.7;
-        }
-
-        /* GRID */
-        .grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: 16px;
-        }
-
-        /* CARD */
-        .card {
-          background: var(--bg-card);
-          border-radius: 14px;
-          padding: 14px;
-          display: flex;
-          align-items: center;
-          gap: 14px;
-          box-shadow: var(--shadow-sm);
-        }
-
-        .card img {
-          width: 60px;
-          height: 60px;
-          border-radius: 50%;
-          object-fit: cover;
-          border: 2px solid var(--primary);
-        }
-
-        .info {
-          flex: 1;
-        }
-
-        .info h3 {
-          margin: 0;
-          font-size: 1rem;
-        }
-
-        .info a {
-          font-size: 0.85rem;
-          color: #25d366;
-          text-decoration: none;
-        }
-
-        .info a:hover {
-          text-decoration: underline;
-        }
-
-        /* BUTTON */
-        button {
-          background: #e74c3c;
-          color: white;
-          border: none;
-          padding: 6px 10px;
-          border-radius: 6px;
-          cursor: pointer;
-          font-size: 0.8rem;
-        }
-
-        button:hover {
-          opacity: 0.9;
-        }
-
-        /* MOBILE */
-        @media (max-width: 600px) {
-          .card {
-            flex-direction: column;
-            text-align: center;
-          }
-
-          button {
-            width: 100%;
-          }
-        }
-      `}</style>
     </div>
   );
 }
