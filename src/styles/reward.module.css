@@ -1,0 +1,129 @@
+.container {
+  padding: 20px;
+  margin-top: 50px;
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* ===== HEADER BOX ===== */
+.giver {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-card);
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-md);
+}
+
+.title {
+  margin: 0;
+}
+
+.subtitle {
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* ===== INPUTS ===== */
+.searchInput {
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-300);
+  font-size: var(--text-base);
+  background: var(--bg-card);
+  color: var(--foreground);
+  width: 100%;
+  max-width: 280px;
+}
+
+.documentSelect {
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-300);
+  font-size: var(--text-base);
+  background: var(--bg-card);
+  color: var(--foreground);
+  width: 100%;
+  max-width: 280px;
+}
+
+/* ===== BUTTONS ===== */
+.primaryBtn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: var(--text-light);
+  cursor: pointer;
+}
+
+.primaryBtn:hover {
+  background: var(--primary-dark);
+}
+
+.updateBtn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: var(--text-light);
+  cursor: pointer;
+}
+
+.updateBtn:hover {
+  background: var(--primary-dark);
+}
+
+/* ===== TABLE ===== */
+.tableWrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.table {
+  width: 100%;
+  min-width: 400px;
+  border-collapse: collapse;
+  box-shadow: var(--shadow-sm);
+}
+
+.th {
+  padding: 10px;
+  background: var(--primary);
+  color: var(--text-light);
+  text-align: left;
+}
+
+.td {
+  padding: 10px;
+  border: 1px solid var(--gray-300);
+  background: var(--bg-card);
+  white-space: nowrap;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .th,
+  .td {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .th,
+  .td {
+    font-size: 0.8rem;
+    padding: 6px;
+  }
+
+  .searchInput,
+  .documentSelect {
+    max-width: 100%;
+  }
+}
