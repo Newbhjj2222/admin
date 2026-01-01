@@ -38,6 +38,7 @@ const Net = () => {
           <li><Link href="/monitize">Monitization management</Link></li>
           <li><Link href="/rewards">Authors Balances</Link></li>
           <li><Link href="/store">Store of Stories</Link></li>
+         <li><Link href="/folder">Folder management</Link></li>
           <li><Link href="/verse">Bible verse manager</Link></li>
           <li><Link href="/withdrawal">Withdrawal requests</Link></li>
           <li><Link href="/Profile">Profile</Link></li>
