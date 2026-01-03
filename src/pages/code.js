@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { Copy } from "lucide-react"; // React icon yo gukora copy
+import { FiCopy } from "react-icons/fi"; // React Icons copy icon
 import styles from "@/styles/code.module.css";
 
 const codeSnippets = [
@@ -58,8 +58,7 @@ const codeSnippets = [
     id: 8,
     title: "Gukora Push",
     code: `git remote add origin https://github.com/Newbhjj2222/nameofrepo.git`,
-    description:
-      "Shyiraho repository yawe ya GitHub nk'origin.",
+    description: "Shyiraho repository yawe ya GitHub nk'origin.",
   },
   {
     id: 9,
@@ -75,6 +74,33 @@ const codeSnippets = [
 Token: ghp_QEiYTUNVGJSmkHymlvqBt43BG2arK80VHKh`,
     description:
       "Ibi ni credentials bya GitHub byo gukora authentication mu gihe ukoresha command line.",
+  },
+  // Commands nshya zigenzi
+  {
+    id: 11,
+    title: "Kugenzura version ya Node.js",
+    code: `node -v`,
+    description: "Iyi command igaragaza version ya Node.js iriho muri system yawe.",
+  },
+  {
+    id: 12,
+    title: "Gushyira mo ESLint na Prettier",
+    code: `npm install eslint prettier eslint-config-prettier eslint-plugin-react --save-dev`,
+    description:
+      "Ibi bituma umushinga wawe uba clean kandi code igahora ihuye n'amabwiriza y'uburyo bwiza bwo kwandika code.",
+  },
+  {
+    id: 13,
+    title: "Kugenzura status ya git",
+    code: `git status`,
+    description: "Iyi command igaragaza uko repository yawe ihagaze ubu, harimo changes zitarashyirwa commit.",
+  },
+  {
+    id: 14,
+    title: "Gushyira mo TailwindCSS",
+    code: `npm install -D tailwindcss postcss autoprefixer && npx tailwindcss init -p`,
+    description:
+      "Iyi command itangiza TailwindCSS mu mushinga wawe wa Next.js.",
   },
 ];
 
@@ -94,7 +120,7 @@ export default function CodePage() {
         <div key={snippet.id} className={styles.snippet}>
           <div className={styles.header}>
             <h2>{snippet.title}</h2>
-            <Copy
+            <FiCopy
               className={styles.copyIcon}
               onClick={() => handleCopy(snippet.code, snippet.id)}
             />
