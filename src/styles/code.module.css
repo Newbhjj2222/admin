@@ -1,84 +1,195 @@
+/* =========================
+   🖥️ CODE PAGE STYLES
+========================= */
+
 .container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  font-family: var(--font-sans);
+  color: var(--foreground);
 }
 
 .title {
+  font-size: var(--text-3xl);
+  font-weight: 700;
   text-align: center;
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #222;
+  margin-bottom: var(--space-lg);
+  color: var(--primary);
 }
 
 .snippet {
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  position: relative;
-  transition: transform 0.2s;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .snippet:hover {
-  transform: scale(1.01);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+}
+
+.header h2 {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  margin: 0;
+  color: var(--secondary);
 }
 
 .copyIcon {
   cursor: pointer;
-  color: #555;
-  transition: color 0.2s;
+  color: var(--primary);
+  font-size: 1.2rem;
+  transition: color 0.2s ease;
 }
 
 .copyIcon:hover {
-  color: #1e90ff;
+  color: var(--primary-dark);
 }
 
 .codeBlock {
-  background-color: #1e1e1e;
-  color: #f8f8f2;
-  padding: 15px;
-  border-radius: 8px;
+  background: var(--gray-100);
+  color: var(--text-dark);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
   overflow-x: auto;
-  font-family: 'Courier New', Courier, monospace;
-  margin-bottom: 10px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  border: 1px solid var(--gray-300);
 }
 
 .description {
-  font-size: 0.95rem;
-  color: #333;
+  font-size: var(--text-base);
+  color: var(--text-muted);
 }
 
 .copiedMsg {
-  position: absolute;
-  top: 10px;
-  right: 40px;
-  background-color: #1e90ff;
-  color: #fff;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 0.85rem;
+  margin-top: var(--space-xs);
+  color: var(--success);
+  font-size: var(--text-sm);
+  font-weight: 600;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .header h2 {
-    font-size: 1rem;
+/* =========================
+   📱 MOBILE
+========================= */
+@media (max-width: 480px) {
+  .container {
+    padding: var(--space-md);
+    gap: var(--space-md);
   }
 
   .title {
-    font-size: 1.5rem;
+    font-size: var(--text-2xl);
+  }
+
+  .header h2 {
+    font-size: var(--text-lg);
+  }
+
+  .copyIcon {
+    font-size: 1rem;
   }
 
   .codeBlock {
-    font-size: 0.85rem;
+    font-size: var(--text-xs);
+    padding: var(--space-xs);
   }
+
+  .description {
+    font-size: var(--text-sm);
+  }
+
+  .snippet {
+    padding: var(--space-sm);
+  }
+}
+
+/* =========================
+   📱 TABLET
+========================= */
+@media (min-width: 481px) and (max-width: 768px) {
+  .container {
+    padding: var(--space-lg);
+    gap: var(--space-lg);
+  }
+
+  .title {
+    font-size: var(--text-3xl);
+  }
+
+  .header h2 {
+    font-size: var(--text-xl);
+  }
+
+  .copyIcon {
+    font-size: 1.1rem;
+  }
+
+  .codeBlock {
+    font-size: var(--text-sm);
+  }
+}
+
+/* =========================
+   🖥️ DESKTOP
+========================= */
+@media (min-width: 769px) {
+  .container {
+    padding: var(--space-xl);
+    gap: var(--space-lg);
+  }
+
+  .title {
+    font-size: var(--text-4xl);
+  }
+
+  .header h2 {
+    font-size: var(--text-2xl);
+  }
+
+  .copyIcon {
+    font-size: 1.2rem;
+  }
+
+  .codeBlock {
+    font-size: var(--text-base);
+  }
+
+  .description {
+    font-size: var(--text-base);
+  }
+}
+
+/* =========================
+   🌟 SCROLLBAR STYLING (OPTIONAL)
+========================= */
+.codeBlock::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.codeBlock::-webkit-scrollbar-thumb {
+  background-color: var(--gray-400);
+  border-radius: var(--radius-sm);
+}
+
+.codeBlock::-webkit-scrollbar-track {
+  background-color: var(--gray-100);
 }
