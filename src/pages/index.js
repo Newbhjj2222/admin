@@ -84,7 +84,6 @@ export default function Home({ initialPosts, totalPosts, totalViews }) {
       </Head>
 
       <div className={styles.container}>
-      
         <Card />
 
         {/* STATS */}
@@ -153,18 +152,17 @@ export async function getServerSideProps({ req }) {
   const cookies = cookie.parse(req.headers.cookie || "");
   const username = cookies.username;
 
-  // 🔒 Redirect if no cookie
   if (!username) {
     return {
       redirect: { destination: "/login", permanent: false },
     };
   }
 
-  // 🔹 Fetch first 10 posts
+  // 🔹 Fetch first 50 posts
   const q = query(
     collection(db, "posts"),
     orderBy("createdAt", "desc"),
-    limit(10)
+    limit(50)
   );
   const snap = await getDocs(q);
   const initialPosts = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
