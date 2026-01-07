@@ -57,7 +57,7 @@ export default function Home({ initialPosts, totalPosts, totalViews }) {
       collection(db, "posts"),
       orderBy("createdAt", "desc"),
       startAfter(last.createdAt),
-      limit(10)
+      limit(50)
     );
 
     const snap = await getDocs(q);
