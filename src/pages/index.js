@@ -35,7 +35,7 @@ export default function Home({ initialPosts, totalPosts, totalViews }) {
 
   const [posts, setPosts] = useState(initialPosts);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(initialPosts.length === 10);
+  const [hasMore, setHasMore] = useState(initialPosts.length === 50);
   const [search, setSearch] = useState("");
 
   const filteredPosts = posts.filter((p) =>
@@ -73,7 +73,7 @@ export default function Home({ initialPosts, totalPosts, totalViews }) {
     }));
 
     setPosts((prev) => [...prev, ...more]);
-    setHasMore(snap.size === 10);
+    setHasMore(snap.size === 50);
     setLoadingMore(false);
   };
 
