@@ -310,6 +310,7 @@ html {
 @media (min-width: 481px) and (max-width: 768px) {
   .themeBox {
     right: 0px;
+    width: 100%;
     bottom: 0px;
     padding: 12px;
     gap: 10px;
