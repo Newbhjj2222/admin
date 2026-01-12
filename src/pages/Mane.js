@@ -8,12 +8,10 @@ const ViewsChart = dynamic(() => import("@/components/ViewsChart"), {
   ssr: false,
 });
 
-// ✅ Fata INKURU nyamukuru gusa (nta S01 EP2)
-/**
- * Sukura head y'inkuru → ifate INKURU gusa
- * Kuraho EPISODE/EP, SEASON/Sxx, imyanya myinshi
- */
-export function cleanStoryHead(head) {
+// ================================
+// ✅ Sukura head y'inkuru & normalize
+// ================================
+export function cleanStoryHead(head = "") {
   if (!head || typeof head !== "string") return "";
 
   return head
@@ -23,13 +21,17 @@ export function cleanStoryHead(head) {
     .replace(/\bSEASON\s*\d+\b/gi, "")
     // 🚫 Kuraho S01, S02, S1, S12 (Season abbreviations)
     .replace(/\bS\d+\b/gi, "")
-    // 🧼 Gusukura imyanya myinshi → ishyira gap imwe gusa hagati y'amagambo
+    // 🧼 Gusukura imyanya myinshi → ishyira gap imwe gusa
     .replace(/\s+/g, " ")
-    .trim();
+    // lowercase kugirango bodyguard na body guard bihuzwe
+    .toLowerCase()
+    .trim()
+    // normalize special cases: bodyguard na body guard
+    .replace(/\bbody\s*guard\b/gi, "body guard");
 }
+
 export async function getServerSideProps() {
   const snap = await getDocs(collection(db, "posts"));
-
   const posts = [];
   snap.forEach((doc) => {
     posts.push({ id: doc.id, ...doc.data() });
@@ -54,7 +56,6 @@ export async function getServerSideProps() {
         imageUrl: p.imageUrl || "",
       };
     }
-
     storiesMap[title].totalViews += views;
     storiesMap[title].episodes += 1;
 
@@ -67,7 +68,6 @@ export async function getServerSideProps() {
           stories: new Set(),
         };
       }
-
       authorMap[p.author].totalViews += views;
       authorMap[p.author].stories.add(title);
     }
@@ -81,7 +81,7 @@ export async function getServerSideProps() {
     return {
       ...s,
       avgViews: Math.round(avg),
-      trending: avg >= 500, // 🔥 rule yawe
+      trending: avg >= 500, // 🔥 rule
     };
   });
 
