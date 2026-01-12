@@ -1,0 +1,164 @@
+/* =========================
+   📊 MANAGER DASHBOARD
+========================= */
+
+.container {
+  padding: var(--space-lg);
+  min-height: 100vh;
+  background: var(--bg-muted);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* =========================
+   🏷️ TITLE
+========================= */
+.title {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  margin-bottom: var(--space-lg);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* =========================
+   📌 SECTIONS
+========================= */
+.sectionTitle {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  margin: var(--space-xl) 0 var(--space-md);
+  color: var(--foreground);
+}
+
+/* =========================
+   📊 STATS
+========================= */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-md);
+}
+
+.statCard {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.statCard h3 {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.statCard p {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* =========================
+   📋 LISTS
+========================= */
+.list {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.listItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  font-size: var(--text-base);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.listItem:last-child {
+  border-bottom: none;
+}
+
+.listItem strong {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.listItem span {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* =========================
+   🔥 HIGHLIGHT TYPES
+========================= */
+.listItem:hover {
+  background: var(--gray-50);
+}
+
+.dark .listItem:hover {
+  background: var(--gray-800);
+}
+
+/* =========================
+   📈 CHART WRAPPER
+========================= */
+.chartBox {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* =========================
+   📢 SHARE SUGGESTIONS
+========================= */
+.shareItem {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+/* =========================
+   📱 MOBILE
+========================= */
+@media (max-width: 480px) {
+  .container {
+    padding: var(--space-md);
+  }
+
+  .title {
+    font-size: var(--text-2xl);
+  }
+
+  .listItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .listItem span {
+    font-size: var(--text-xs);
+  }
+}
+
+/* =========================
+   📱 TABLET
+========================= */
+@media (min-width: 481px) and (max-width: 768px) {
+  .title {
+    font-size: var(--text-2xl);
+  }
+}
