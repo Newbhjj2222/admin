@@ -3,74 +3,91 @@
 ========================= */
 
 .container {
-  padding: var(--space-lg);
-  min-height: 100vh;
-  background: var(--bg-muted);
-  color: var(--foreground);
-  font-family: var(--font-sans);
+  padding: var(--space-xl);
+  max-width: 1200px;
+  margin: 70px auto;
 }
 
 /* =========================
-   🏷️ TITLE
+   🧭 HEADER
 ========================= */
+
+.header {
+  margin-bottom: var(--space-xl);
+}
+
 .title {
-  font-size: var(--text-3xl);
+  font-size: var(--text-4xl);
+  font-family: var(--font-display);
   font-weight: 700;
-  margin-bottom: var(--space-lg);
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  margin-bottom: var(--space-sm);
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
 }
 
 /* =========================
-   📌 SECTIONS
+   📦 CARDS (INSIGHTS)
 ========================= */
-.sectionTitle {
-  font-size: var(--text-xl);
-  font-weight: 600;
-  margin: var(--space-xl) 0 var(--space-md);
-  color: var(--foreground);
-}
 
-/* =========================
-   📊 STATS
-========================= */
-.statsGrid {
+.cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--space-md);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
 }
 
-.statCard {
+.card {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   box-shadow: var(--shadow-md);
-  text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.statCard:hover {
+.card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
 }
 
-.statCard h3 {
+.cardTitle {
   font-size: var(--text-sm);
-  font-weight: 500;
   color: var(--text-muted);
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-xs);
 }
 
-.statCard p {
+.cardValue {
   font-size: var(--text-3xl);
   font-weight: 700;
   color: var(--primary);
 }
 
 /* =========================
-   📋 LISTS
+   📑 SECTIONS
 ========================= */
+
+.section {
+  margin-bottom: var(--space-xl);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.sectionTitle {
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
+/* =========================
+   📄 LISTS (POSTS / AUTHORS)
+========================= */
+
 .list {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
@@ -79,86 +96,99 @@
 }
 
 .listItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-md);
   padding: var(--space-md) var(--space-lg);
-  font-size: var(--text-base);
   border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .listItem:last-child {
   border-bottom: none;
 }
 
-.listItem strong {
-  font-weight: 600;
-  color: var(--foreground);
-}
-
-.listItem span {
-  font-size: var(--text-sm);
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-
-/* =========================
-   🔥 HIGHLIGHT TYPES
-========================= */
 .listItem:hover {
   background: var(--gray-50);
 }
 
 .dark .listItem:hover {
-  background: var(--gray-800);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.itemTitle {
+  font-weight: 600;
+  font-size: var(--text-base);
+}
+
+.itemMeta {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
 }
 
 /* =========================
-   📈 CHART WRAPPER
+   ⚠️ VIOLATIONS
 ========================= */
+
+.violation {
+  border-left: 4px solid var(--danger);
+  background: rgba(220, 38, 38, 0.05);
+}
+
+.dark .violation {
+  background: rgba(220, 38, 38, 0.15);
+}
+
+/* =========================
+   🔥 TAGS / BADGES
+========================= */
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: var(--text-xs);
+  border-radius: var(--radius-sm);
+  background: var(--primary-light);
+  color: #fff;
+  width: fit-content;
+}
+
+.badge.success {
+  background: var(--success);
+}
+
+.badge.warning {
+  background: var(--warning);
+}
+
+.badge.danger {
+  background: var(--danger);
+}
+
+/* =========================
+   📈 CHART CONTAINER
+========================= */
+
 .chartBox {
   background: var(--bg-card);
-  border-radius: var(--radius-lg);
   padding: var(--space-lg);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
 }
 
 /* =========================
-   📢 SHARE SUGGESTIONS
+   📱 RESPONSIVE
 ========================= */
-.shareItem {
-  color: var(--primary);
-  font-weight: 500;
-}
 
-/* =========================
-   📱 MOBILE
-========================= */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .container {
-    padding: var(--space-md);
+    padding: var(--space-lg);
   }
 
   .title {
-    font-size: var(--text-2xl);
+    font-size: var(--text-3xl);
   }
 
-  .listItem {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .listItem span {
-    font-size: var(--text-xs);
-  }
-}
-
-/* =========================
-   📱 TABLET
-========================= */
-@media (min-width: 481px) and (max-width: 768px) {
-  .title {
+  .cardValue {
     font-size: var(--text-2xl);
   }
 }
