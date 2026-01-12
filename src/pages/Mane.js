@@ -9,15 +9,13 @@ const ViewsChart = dynamic(() => import("@/components/ViewsChart"), {
 });
 
 // ✅ Fata INKURU nyamukuru gusa (nta S01 EP2)
-function getStoryTitle(head = "") {
-  if (!head) return "UNKNOWN";
-
+function cleanStoryHead(head = "") {
   return head
     // Kuraho EPISODE / EP + number
     .replace(/\bEP(ISODE)?\s*\d+\b/gi, "")
     // Kuraho SEASON + number
     .replace(/\bSEASON\s*\d+\b/gi, "")
-    // Kuraho S01, S1 n'ibindi
+    // Kuraho S01, S02, S1, S12 gusa (Season abbreviations)
     .replace(/\bS\d+\b/gi, "")
     // Gusukura imyanya myinshi
     .replace(/\s+/g, " ")
