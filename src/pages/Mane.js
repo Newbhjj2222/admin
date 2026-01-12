@@ -11,8 +11,17 @@ const ViewsChart = dynamic(() => import("@/components/ViewsChart"), {
 // ✅ Fata INKURU nyamukuru gusa (nta S01 EP2)
 function getStoryTitle(head = "") {
   if (!head) return "UNKNOWN";
-  const index = head.indexOf(" S");
-  return index === -1 ? head.trim() : head.slice(0, index).trim();
+
+  return head
+    // Kuraho EPISODE / EP + number
+    .replace(/\bEP(ISODE)?\s*\d+\b/gi, "")
+    // Kuraho SEASON + number
+    .replace(/\bSEASON\s*\d+\b/gi, "")
+    // Kuraho S01, S1 n'ibindi
+    .replace(/\bS\d+\b/gi, "")
+    // Gusukura imyanya myinshi
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export async function getServerSideProps() {
