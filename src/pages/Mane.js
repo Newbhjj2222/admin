@@ -8,14 +8,11 @@ const ViewsChart = dynamic(() => import("@/components/ViewsChart"), {
   ssr: false,
 });
 
-// 🧼 Sukura head → ifate INKURU gusa
-function cleanHead(head = "") {
-  return head
-    .replace(/S\d+/gi, "")
-    .replace(/EP\s*\d+/gi, "")
-    .replace(/Season\s*\d+/gi, "")
-    .replace(/\s+/g, " ")
-    .trim();
+// ✅ Fata INKURU nyamukuru gusa (nta S01 EP2)
+function getStoryTitle(head = "") {
+  if (!head) return "UNKNOWN";
+  const index = head.indexOf(" S");
+  return index === -1 ? head.trim() : head.slice(0, index).trim();
 }
 
 export async function getServerSideProps() {
@@ -33,7 +30,7 @@ export async function getServerSideProps() {
   const authorMap = {};
 
   posts.forEach((p) => {
-    const title = cleanHead(p.head);
+    const title = getStoryTitle(p.head);
     const views = Number(p.views) || 0;
 
     // ===== INKURU =====
@@ -45,31 +42,38 @@ export async function getServerSideProps() {
         imageUrl: p.imageUrl || "",
       };
     }
+
     storiesMap[title].totalViews += views;
     storiesMap[title].episodes += 1;
 
     // ===== AUTHOR =====
-    if (!authorMap[p.author]) {
-      authorMap[p.author] = {
-        author: p.author,
-        totalViews: 0,
-        stories: new Set(),
-      };
+    if (p.author) {
+      if (!authorMap[p.author]) {
+        authorMap[p.author] = {
+          author: p.author,
+          totalViews: 0,
+          stories: new Set(),
+        };
+      }
+
+      authorMap[p.author].totalViews += views;
+      authorMap[p.author].stories.add(title);
     }
-    authorMap[p.author].totalViews += views;
-    authorMap[p.author].stories.add(title);
   });
 
   // ===============================
-  // 🔥 TOP STORIES (BY VIEWS)
+  // 🔥 TOP STORIES
   // ===============================
-  const stories = Object.values(storiesMap).map((s) => ({
-    ...s,
-    avgViews: Math.round(s.totalViews / s.episodes),
-    trending: s.totalViews / s.episodes > 500, // 🔥 rule
-  }));
+  const stories = Object.values(storiesMap).map((s) => {
+    const avg = s.episodes ? s.totalViews / s.episodes : 0;
+    return {
+      ...s,
+      avgViews: Math.round(avg),
+      trending: avg >= 500, // 🔥 rule yawe
+    };
+  });
 
-  const topStories = stories
+  const topStories = [...stories]
     .sort((a, b) => b.totalViews - a.totalViews)
     .slice(0, 10);
 
@@ -90,6 +94,7 @@ export async function getServerSideProps() {
   // 📢 SHARE SUGGESTIONS (EPISODES)
   // ===============================
   const shareBoost = [...posts]
+    .filter((p) => p.views)
     .sort((a, b) => (b.views || 0) - (a.views || 0))
     .slice(0, 6);
 
@@ -130,7 +135,7 @@ export default function ManagerPage({
 
       {/* CHART */}
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>📈 Top Inkuru (Views)</h2>
+        <h2 className={styles.sectionTitle}>📈 Inkuru zikunzwe (Views)</h2>
         <ViewsChart data={topStories} />
       </section>
 
@@ -141,8 +146,10 @@ export default function ManagerPage({
           {topStories.map((s, i) => (
             <div key={s.title} className={styles.listItem}>
               <strong>
-                {i + 1}. {s.title}{" "}
-                {s.trending && <span className={styles.badge}>🔥 Trending</span>}
+                {i + 1}. {s.title}
+                {s.trending && (
+                  <span className={styles.badge}>🔥 Trending</span>
+                )}
               </strong>
               <span className={styles.itemMeta}>
                 {s.totalViews} views · {s.episodes} eps · avg {s.avgViews}/ep
@@ -158,9 +165,12 @@ export default function ManagerPage({
         <div className={styles.list}>
           {popularAuthors.map((a, i) => (
             <div key={a.author} className={styles.listItem}>
-              <strong>{i + 1}. {a.author}</strong>
+              <strong>
+                {i + 1}. {a.author}
+              </strong>
               <span className={styles.itemMeta}>
-                {a.totalViews} views · {a.storiesCount} inkuru · avg {a.avgPerStory}
+                {a.totalViews} views · {a.storiesCount} inkuru · avg{" "}
+                {a.avgPerStory}
               </span>
             </div>
           ))}
