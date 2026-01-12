@@ -9,19 +9,24 @@ const ViewsChart = dynamic(() => import("@/components/ViewsChart"), {
 });
 
 // ✅ Fata INKURU nyamukuru gusa (nta S01 EP2)
-function cleanStoryHead(head = "") {
+/**
+ * Sukura head y'inkuru → ifate INKURU gusa
+ * Kuraho EPISODE/EP, SEASON/Sxx, imyanya myinshi
+ */
+export function cleanStoryHead(head) {
+  if (!head || typeof head !== "string") return "";
+
   return head
-    // Kuraho EPISODE / EP + number
+    // 🚫 Kuraho EPISODE / EP + number
     .replace(/\bEP(ISODE)?\s*\d+\b/gi, "")
-    // Kuraho SEASON + number
+    // 🚫 Kuraho SEASON + number
     .replace(/\bSEASON\s*\d+\b/gi, "")
-    // Kuraho S01, S02, S1, S12 gusa (Season abbreviations)
+    // 🚫 Kuraho S01, S02, S1, S12 (Season abbreviations)
     .replace(/\bS\d+\b/gi, "")
-    // Gusukura imyanya myinshi
+    // 🧼 Gusukura imyanya myinshi → ishyira gap imwe gusa hagati y'amagambo
     .replace(/\s+/g, " ")
     .trim();
 }
-
 export async function getServerSideProps() {
   const snap = await getDocs(collection(db, "posts"));
 
@@ -37,7 +42,7 @@ export async function getServerSideProps() {
   const authorMap = {};
 
   posts.forEach((p) => {
-    const title = getStoryTitle(p.head);
+    const title = cleanStoryHead(p.head);
     const views = Number(p.views) || 0;
 
     // ===== INKURU =====
