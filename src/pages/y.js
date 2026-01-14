@@ -1,52 +1,58 @@
-import { useState } from "react";
-import { translateTexts } from "@/utils/translate";
+// pages/index.js
+import { useState, useEffect } from "react";
+import { translateTexts } from "../utils/translate";
 
-export default function Home() {
-  const [textInput, setTextInput] = useState("");
-  const [textsArray, setTextsArray] = useState([]);
-  const [translations, setTranslations] = useState([]);
+export default function AutoTranslateDemo() {
+  const [textInput, setTextInput] = useState("");      // Text user yandika
+  const [textsArray, setTextsArray] = useState([]);    // Lines zose ziri muri array
+  const [translations, setTranslations] = useState([]); // results ziva kuri API
+  const [loading, setLoading] = useState(false);
 
-  const handleAddText = () => {
-    if (textInput.trim() !== "") {
-      setTextsArray([...textsArray, textInput]);
-      setTextInput("");
-    }
+  // Buri kanda user akanda, split text muri lines
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setTextInput(value);
+
+    const lines = value.split("\n").filter(line => line.trim() !== "");
+    setTextsArray(lines);
   };
 
-  const handleTranslate = async () => {
-    if (textsArray.length === 0) return;
-    try {
-      const data = await translateTexts(textsArray, "en");
-      setTranslations(data.results);
-    } catch (error) {
-      console.error(error);
+  // Auto-translate buri kanda user ahindura textsArray
+  useEffect(() => {
+    if (textsArray.length === 0) {
+      setTranslations([]);
+      return;
     }
-  };
+
+    const timeout = setTimeout(async () => {
+      try {
+        setLoading(true);
+        const data = await translateTexts(textsArray, "en"); // English
+        setTranslations(data.results);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timeout);
+  }, [textsArray]);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Translate Demo</h1>
+    <div style={{ padding: "20px", maxWidth: "700px", margin: "auto" }}>
+      <h1>Auto Translate Demo</h1>
       
-      <div>
-        <input
-          type="text"
-          value={textInput}
-          onChange={(e) => setTextInput(e.target.value)}
-          placeholder="Andika amagambo hano"
-        />
-        <button onClick={handleAddText}>Add</button>
-      </div>
+      <textarea
+        rows={6}
+        style={{ width: "100%", padding: "10px", fontSize: "16px" }}
+        placeholder="Andika amagambo hano..."
+        value={textInput}
+        onChange={handleInputChange}
+      />
 
-      <div style={{ marginTop: "20px" }}>
-        <button onClick={handleTranslate}>Translate All</button>
-      </div>
-
-      <h2>Texts to Translate:</h2>
-      <ul>
-        {textsArray.map((t, i) => <li key={i}>{t}</li>)}
-      </ul>
-
-      <h2>Translations:</h2>
+      <h2>Translations (English):</h2>
+      {loading && <p>Translating...</p>}
       <ul>
         {translations.map((res, i) => (
           <li key={i}>
