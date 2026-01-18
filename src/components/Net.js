@@ -43,7 +43,7 @@ const Net = () => {
           <li><Link href="/withdrawal">Withdrawal requests</Link></li>
           <li><Link href="/code">Useful code</Link></li>
           <li><Link href="https://dash-nine-rho.vercel.app/sliy">NetSlider</Link></li>
-          <li><Link href="/Mene">Dashboard manager</Link></li>
+          <li><Link href="/Mane">Dashboard manager</Link></li>
           <li><Link href="https://www.newtalentsg.co.rw/netma">Netweb requests</Link></li>
           <li><Link href="/Profile">Profile</Link></li>
           <li><Link href="https://dash-nine-rho.vercel.app/manage">News manager</Link></li>
