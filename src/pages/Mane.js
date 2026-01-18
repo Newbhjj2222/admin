@@ -9,45 +9,59 @@ const ViewsChart = dynamic(() => import("@/components/ViewsChart"), {
 });
 
 // =======================================
-// 🧼 CLEAN & NORMALIZE STORY TITLE
+// 🧼 CLEAN & NORMALIZE STORY TITLE (PRO)
 // =======================================
 export function cleanStoryHead(head = "") {
   if (!head || typeof head !== "string") return "";
 
   return head
-    // remove episode info
+    // remove content inside parentheses: (the same)
+    .replace(/\(.*?\)/g, "")
+
+    // remove S05E08, S5E8, s01e01
+    .replace(/\bS\d+\s*E\d+\b/gi, "")
+
+    // remove episode words: EP 8, Episode 10
     .replace(/\bEP(ISODE)?\s*\d+\b/gi, "")
-    // remove season words
+
+    // remove season words: Season 5, Series 2
     .replace(/\b(SEASON|SERIES)\s*\d+\b/gi, "")
-    // remove S01, S2, S12
+
+    // remove standalone S05, S5
     .replace(/\bS\d+\b/gi, "")
+
     // remove PART 1, PART 2
     .replace(/\bPART\s*\d+\b/gi, "")
+
     // remove FINAL, NEW SEASON
     .replace(/\b(FINAL|NEW\s*SEASON)\b/gi, "")
+
     // remove separators
-    .replace(/[-–—|:]/g, " ")
+    .replace(/[-–—|:_]/g, " ")
+
     // normalize spaces
     .replace(/\s+/g, " ")
     .toLowerCase()
     .trim();
 }
-
 // =======================================
-// 🎬 EXTRACT SEASON NUMBER FROM HEAD
+// 🎬 EXTRACT SEASON NUMBER (SxxExx SAFE)
 // =======================================
 export function extractSeason(head = "") {
   if (!head || typeof head !== "string") return 1;
 
-  // Season 2 / Series 3
+  // S05E08 → Season 5
+  const sxe = head.match(/\bS(\d+)\s*E\d+\b/i);
+  if (sxe) return Number(sxe[1]);
+
+  // Season 5 / Series 3
   const seasonWord = head.match(/\b(SEASON|SERIES)\s*(\d+)\b/i);
   if (seasonWord) return Number(seasonWord[2]);
 
-  // S01 / S2 / S12
+  // S05 / S5
   const seasonShort = head.match(/\bS(\d+)\b/i);
   if (seasonShort) return Number(seasonShort[1]);
 
-  // default → Season 1
   return 1;
 }
 
