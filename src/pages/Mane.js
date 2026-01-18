@@ -8,58 +8,84 @@ const ViewsChart = dynamic(() => import("@/components/ViewsChart"), {
   ssr: false,
 });
 
-// ================================
-// ✅ Sukura head y'inkuru & normalize
-// ================================
+// =======================================
+// 🧼 CLEAN & NORMALIZE STORY TITLE
+// =======================================
 export function cleanStoryHead(head = "") {
   if (!head || typeof head !== "string") return "";
 
   return head
-    // 🚫 Kuraho EPISODE / EP + number
+    // remove episode info
     .replace(/\bEP(ISODE)?\s*\d+\b/gi, "")
-    // 🚫 Kuraho SEASON + number
-    .replace(/\bSEASON\s*\d+\b/gi, "")
-    // 🚫 Kuraho S01, S02, S1, S12 (Season abbreviations)
+    // remove season words
+    .replace(/\b(SEASON|SERIES)\s*\d+\b/gi, "")
+    // remove S01, S2, S12
     .replace(/\bS\d+\b/gi, "")
-    // 🧼 Gusukura imyanya myinshi → ishyira gap imwe gusa
+    // remove PART 1, PART 2
+    .replace(/\bPART\s*\d+\b/gi, "")
+    // remove FINAL, NEW SEASON
+    .replace(/\b(FINAL|NEW\s*SEASON)\b/gi, "")
+    // remove separators
+    .replace(/[-–—|:]/g, " ")
+    // normalize spaces
     .replace(/\s+/g, " ")
-    // lowercase kugirango bodyguard na body guard bihuzwe
     .toLowerCase()
-    .trim()
-    // normalize special cases: bodyguard na body guard
-    .replace(/\bbody\s*guard\b/gi, "body guard");
+    .trim();
+}
+
+// =======================================
+// 🎬 EXTRACT SEASON NUMBER FROM HEAD
+// =======================================
+export function extractSeason(head = "") {
+  if (!head || typeof head !== "string") return 1;
+
+  // Season 2 / Series 3
+  const seasonWord = head.match(/\b(SEASON|SERIES)\s*(\d+)\b/i);
+  if (seasonWord) return Number(seasonWord[2]);
+
+  // S01 / S2 / S12
+  const seasonShort = head.match(/\bS(\d+)\b/i);
+  if (seasonShort) return Number(seasonShort[1]);
+
+  // default → Season 1
+  return 1;
 }
 
 export async function getServerSideProps() {
   const snap = await getDocs(collection(db, "posts"));
   const posts = [];
+
   snap.forEach((doc) => {
     posts.push({ id: doc.id, ...doc.data() });
   });
 
-  // ===============================
-  // 🧠 GROUP BY INKURU & AUTHOR
-  // ===============================
+  // =======================================
+  // 🧠 MAPS
+  // =======================================
   const storiesMap = {};
   const authorMap = {};
 
   posts.forEach((p) => {
-    const title = cleanStoryHead(p.head);
+    const storyKey = cleanStoryHead(p.head);
+    const season = extractSeason(p.head);
     const views = Number(p.views) || 0;
 
-    // ===== INKURU =====
-    if (!storiesMap[title]) {
-      storiesMap[title] = {
-        title,
+    // ===== STORIES =====
+    if (!storiesMap[storyKey]) {
+      storiesMap[storyKey] = {
+        title: storyKey,
         totalViews: 0,
         episodes: 0,
+        seasons: new Set(), // 🔥 seasons storage
         imageUrl: p.imageUrl || "",
       };
     }
-    storiesMap[title].totalViews += views;
-    storiesMap[title].episodes += 1;
 
-    // ===== AUTHOR =====
+    storiesMap[storyKey].totalViews += views;
+    storiesMap[storyKey].episodes += 1;
+    storiesMap[storyKey].seasons.add(season);
+
+    // ===== AUTHORS =====
     if (p.author) {
       if (!authorMap[p.author]) {
         authorMap[p.author] = {
@@ -68,20 +94,26 @@ export async function getServerSideProps() {
           stories: new Set(),
         };
       }
+
       authorMap[p.author].totalViews += views;
-      authorMap[p.author].stories.add(title);
+      authorMap[p.author].stories.add(storyKey);
     }
   });
 
-  // ===============================
+  // =======================================
   // 🔥 TOP STORIES
-  // ===============================
+  // =======================================
   const stories = Object.values(storiesMap).map((s) => {
     const avg = s.episodes ? s.totalViews / s.episodes : 0;
+
     return {
-      ...s,
+      title: s.title,
+      totalViews: s.totalViews,
+      episodes: s.episodes,
+      seasonsCount: s.seasons.size, // ✅ number of seasons
       avgViews: Math.round(avg),
-      trending: avg >= 500, // 🔥 rule
+      trending: avg >= 500,
+      imageUrl: s.imageUrl,
     };
   });
 
@@ -89,9 +121,9 @@ export async function getServerSideProps() {
     .sort((a, b) => b.totalViews - a.totalViews)
     .slice(0, 10);
 
-  // ===============================
+  // =======================================
   // ⭐ POPULAR AUTHORS
-  // ===============================
+  // =======================================
   const popularAuthors = Object.values(authorMap)
     .map((a) => ({
       author: a.author,
@@ -102,9 +134,9 @@ export async function getServerSideProps() {
     .sort((a, b) => b.totalViews - a.totalViews)
     .slice(0, 10);
 
-  // ===============================
+  // =======================================
   // 📢 SHARE SUGGESTIONS (EPISODES)
-  // ===============================
+  // =======================================
   const shareBoost = [...posts]
     .filter((p) => p.views)
     .sort((a, b) => (b.views || 0) - (a.views || 0))
@@ -164,7 +196,8 @@ export default function ManagerPage({
                 )}
               </strong>
               <span className={styles.itemMeta}>
-                {s.totalViews} views · {s.episodes} eps · avg {s.avgViews}/ep
+                {s.totalViews} views · {s.episodes} eps ·{" "}
+                {s.seasonsCount} seasons · avg {s.avgViews}/ep
               </span>
             </div>
           ))}
@@ -189,7 +222,7 @@ export default function ManagerPage({
         </div>
       </section>
 
-      {/* SHARE */}
+      {/* SHARE BOOST */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>📢 Share suggestions (Episodes)</h2>
         <div className={styles.list}>
