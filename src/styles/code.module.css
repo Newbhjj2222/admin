@@ -4,7 +4,8 @@
 
 .container {
   max-width: 1200px;
-  margin: 0 auto;
+  margin-top: 70px;
+  margin-bottom: 170px;
   padding: var(--space-lg);
   display: flex;
   flex-direction: column;
