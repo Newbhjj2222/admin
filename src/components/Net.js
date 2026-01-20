@@ -46,6 +46,8 @@ const Net = () => {
           <li><Link href="/Mane">Dashboard manager</Link></li>
           <li><Link href="https://www.newtalentsg.co.rw/netma">Netweb requests</Link></li>
           <li><Link href="/Profile">Profile</Link></li>
+         <li><Link href="https://bmmm.ct.ws">Make Payouts</Link></li>
+         <li><Link href="https://dash-nine-rho.vercel.app/freema">Free Stories manager</Link></li>
           <li><Link href="https://dash-nine-rho.vercel.app/manage">News manager</Link></li>
           <li><Link href="https://dash-nine-rho.vercel.app/addnew">Publish news</Link></li>
           <li><Link href="https://dash-nine-rho.vercel.app/poly">Poly maker</Link></li>
