@@ -1,9 +1,8 @@
-// pages/withdrawal.js
 'use client';
 
 import React, { useState } from "react";
 import { db } from "@/components/firebase";
-import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, updateDoc, serverTimestamp, increment } from "firebase/firestore";
 import { useTheme } from "@/components/theme";
 import styles from "@/styles/Withdrawal.module.css";
 
@@ -36,7 +35,7 @@ export default function WithdrawalPage({ withdrawersServer }) {
     }
   };
 
-  // Update NES
+  // Update NES requested (snapshot only)
   const updateNES = async () => {
     if (!selectedId) return alert("Hitamo user mbere yo kuvugurura NES.");
     const newNES = prompt("Shyiramo agaciro gashya ka NES:");
@@ -50,6 +49,35 @@ export default function WithdrawalPage({ withdrawersServer }) {
         console.error(err);
         alert("Habaye ikosa mu kuvugurura NES.");
       }
+    }
+  };
+
+  // Approve request
+  const approveRequest = async () => {
+    if (!selectedId) return alert("Hitamo user mbere yo guhindura status.");
+    if (selectedData.withdrawStatus === "approved") return alert("Request yamaze kwemezwa.");
+
+    try {
+      const withdrawRef = doc(db, "withdrawers", selectedId);
+      const authorRef = doc(db, "authors", selectedData.username);
+
+      // 1️⃣ Gabanya NES ku author
+      await updateDoc(authorRef, {
+        nes: increment(-selectedData.nesRequested),
+        updatedAt: serverTimestamp(),
+      });
+
+      // 2️⃣ Hindura status ya request
+      await updateDoc(withdrawRef, {
+        withdrawStatus: "approved",
+        approvedAt: serverTimestamp(),
+      });
+
+      setSelectedData(prev => ({ ...prev, withdrawStatus: "approved" }));
+      alert("Request yemerewe neza! NES igabanutse kuri author.");
+    } catch (err) {
+      console.error(err);
+      alert("Habaye ikosa mu kwemeza request.");
     }
   };
 
@@ -90,9 +118,9 @@ export default function WithdrawalPage({ withdrawersServer }) {
                 <th>NES Requested</th>
                 <th>Total NES</th>
                 <th>RWF Value</th>
-                <th>Status</th>
+                <th>Request Status</th>
                 <th>Time</th>
-                <th>Action</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -100,9 +128,9 @@ export default function WithdrawalPage({ withdrawersServer }) {
                 <td>{selectedData.username || "N/A"}</td>
                 <td>{selectedData.phone || "N/A"}</td>
                 <td>{selectedData.nesRequested || "N/A"}</td>
-                <td>{selectedData.nesTotal || "N/A"}</td>
-                <td>{selectedData.rwfValue || "N/A"}</td>
-                <td>{selectedData.status || "Pending"}</td>
+                <td>{selectedData.nesBefore || "N/A"}</td>
+                <td>{selectedData.rwfRequested || "N/A"}</td>
+                <td>{selectedData.withdrawStatus || "Pending"}</td>
                 <td>
                   {selectedData.createdAt?.toDate
                     ? selectedData.createdAt.toDate().toLocaleString()
@@ -110,6 +138,9 @@ export default function WithdrawalPage({ withdrawersServer }) {
                 </td>
                 <td>
                   <button className={styles.btn} onClick={updateNES}>Update NES</button>
+                  <button className={styles.btn} onClick={approveRequest} style={{marginLeft: '8px'}}>
+                    Approve
+                  </button>
                 </td>
               </tr>
             </tbody>
