@@ -53,7 +53,33 @@
   padding: 20px;
   opacity: 0.7;
 }
+.monetized {
+  color: #16a34a;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
 
+.nonMonetized {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.shield {
+  position: relative;
+  display: inline-flex;
+  font-size: 16px;
+}
+
+.check {
+  position: absolute;
+  font-size: 9px;
+  color: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 /* ===== BUTTONS ===== */
 .allow {
   padding: 6px 12px;
