@@ -52,13 +52,13 @@ export default function Monetize({ initialAuthors }) {
                 </td>
                 <td className={styles.td}>
                   <button
-                    className={styles.allow}
-                    onClick={() =>
-                      updateAuthorStatus(author.id, "Monetized💲")
-                    }
-                  >
-                    Allow
-                  </button>
+  className={styles.allow}
+  onClick={() =>
+    updateAuthorStatus(author.id, "Monetized factcheckershelide")
+  }
+>
+  Allow
+</button>
 
                   <button
                     className={styles.disallow}
