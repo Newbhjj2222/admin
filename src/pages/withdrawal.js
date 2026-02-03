@@ -2,7 +2,14 @@
 
 import React, { useState } from "react";
 import { db } from "@/components/firebase";
-import { collection, getDocs, doc, getDoc, updateDoc, serverTimestamp, increment } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { useTheme } from "@/components/theme";
 import styles from "@/styles/Withdrawal.module.css";
 
@@ -13,12 +20,12 @@ export default function WithdrawalPage({ withdrawersServer }) {
   const [selectedData, setSelectedData] = useState(null);
   const [search, setSearch] = useState("");
 
-  // Filter withdrawers
-  const filteredWithdrawers = withdrawers.filter(w =>
+  // ================= FILTER =================
+  const filteredWithdrawers = withdrawers.filter((w) =>
     w.id.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Load selected withdrawer
+  // ================= LOAD SELECTED DOCUMENT =================
   const loadDocument = async () => {
     if (!selectedId) return alert("Hitamo User.");
     try {
@@ -35,7 +42,7 @@ export default function WithdrawalPage({ withdrawersServer }) {
     }
   };
 
-  // Update NES requested (snapshot only)
+  // ================= UPDATE NES REQUESTED =================
   const updateNES = async () => {
     if (!selectedId) return alert("Hitamo user mbere yo kuvugurura NES.");
     const newNES = prompt("Shyiramo agaciro gashya ka NES:");
@@ -43,7 +50,7 @@ export default function WithdrawalPage({ withdrawersServer }) {
       try {
         const docRef = doc(db, "withdrawers", selectedId);
         await updateDoc(docRef, { nesRequested: Number(newNES) });
-        setSelectedData(prev => ({ ...prev, nesRequested: Number(newNES) }));
+        setSelectedData((prev) => ({ ...prev, nesRequested: Number(newNES) }));
         alert("NES yavuguruwe neza!");
       } catch (err) {
         console.error(err);
@@ -52,29 +59,52 @@ export default function WithdrawalPage({ withdrawersServer }) {
     }
   };
 
-  // Approve request
+  // ================= APPROVE REQUEST =================
   const approveRequest = async () => {
     if (!selectedId) return alert("Hitamo user mbere yo guhindura status.");
-    if (selectedData.withdrawStatus === "approved") return alert("Request yamaze kwemezwa.");
+    if (selectedData.withdrawStatus === "approved")
+      return alert("Request yamaze kwemezwa.");
 
     try {
       const withdrawRef = doc(db, "withdrawers", selectedId);
       const authorRef = doc(db, "authors", selectedData.username);
 
-      // 1️⃣ Gabanya NES ku author
+      // Fata NES iriho kuri author
+      const authorSnap = await getDoc(authorRef);
+      if (!authorSnap.exists()) return alert("Author document ntiboneka");
+
+      const authorData = authorSnap.data();
+      const nesBefore = Number(authorData.nes || 0);
+
+      if (nesBefore < selectedData.nesRequested) {
+        return alert(
+          `NES kuri author ni ${nesBefore}, ntabwo bishoboka gukura ${selectedData.nesRequested}`
+        );
+      }
+
+      const nesAfter = nesBefore - selectedData.nesRequested;
+
+      // 1️⃣ Gabanya NES kuri author
       await updateDoc(authorRef, {
-        nes: increment(-selectedData.nesRequested),
+        nes: nesAfter,
         updatedAt: serverTimestamp(),
       });
 
-      // 2️⃣ Hindura status ya request
+      // 2️⃣ Hindura status ya withdraw request na snapshot ya nesAfter
       await updateDoc(withdrawRef, {
         withdrawStatus: "approved",
         approvedAt: serverTimestamp(),
+        nesAfter,
       });
 
-      setSelectedData(prev => ({ ...prev, withdrawStatus: "approved" }));
-      alert("Request yemerewe neza! NES igabanutse kuri author.");
+      // 3️⃣ Update local state
+      setSelectedData((prev) => ({
+        ...prev,
+        withdrawStatus: "approved",
+        nesAfter,
+      }));
+
+      alert(`Request yemerewe! NES isigaye kuri author: ${nesAfter}`);
     } catch (err) {
       console.error(err);
       alert("Habaye ikosa mu kwemeza request.");
@@ -101,11 +131,15 @@ export default function WithdrawalPage({ withdrawersServer }) {
           className={styles.documentSelect}
         >
           <option value="">Hitamo User</option>
-          {filteredWithdrawers.map(w => (
-            <option key={w.id} value={w.id}>{w.id}</option>
+          {filteredWithdrawers.map((w) => (
+            <option key={w.id} value={w.id}>
+              {w.id}
+            </option>
           ))}
         </select>
-        <button className={styles.btn} onClick={loadDocument}>Show</button>
+        <button className={styles.btn} onClick={loadDocument}>
+          Show
+        </button>
       </div>
 
       {selectedData && (
@@ -116,7 +150,8 @@ export default function WithdrawalPage({ withdrawersServer }) {
                 <th>Username</th>
                 <th>Phone</th>
                 <th>NES Requested</th>
-                <th>Total NES</th>
+                <th>Total NES (Before)</th>
+                <th>NES After</th>
                 <th>RWF Value</th>
                 <th>Request Status</th>
                 <th>Time</th>
@@ -129,6 +164,7 @@ export default function WithdrawalPage({ withdrawersServer }) {
                 <td>{selectedData.phone || "N/A"}</td>
                 <td>{selectedData.nesRequested || "N/A"}</td>
                 <td>{selectedData.nesBefore || "N/A"}</td>
+                <td>{selectedData.nesAfter ?? "Pending"}</td>
                 <td>{selectedData.rwfRequested || "N/A"}</td>
                 <td>{selectedData.withdrawStatus || "Pending"}</td>
                 <td>
@@ -137,8 +173,14 @@ export default function WithdrawalPage({ withdrawersServer }) {
                     : "N/A"}
                 </td>
                 <td>
-                  <button className={styles.btn} onClick={updateNES}>Update NES</button>
-                  <button className={styles.btn} onClick={approveRequest} style={{marginLeft: '8px'}}>
+                  <button className={styles.btn} onClick={updateNES}>
+                    Update NES
+                  </button>
+                  <button
+                    className={styles.btn}
+                    onClick={approveRequest}
+                    style={{ marginLeft: "8px" }}
+                  >
                     Approve
                   </button>
                 </td>
@@ -155,7 +197,7 @@ export default function WithdrawalPage({ withdrawersServer }) {
 export async function getServerSideProps() {
   try {
     const snapshot = await getDocs(collection(db, "withdrawers"));
-    const withdrawers = snapshot.docs.map(d => ({
+    const withdrawers = snapshot.docs.map((d) => ({
       id: d.id,
       ...d.data(),
     }));
