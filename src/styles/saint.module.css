@@ -1,0 +1,59 @@
+/* BACKGROUND HEARTS */
+.heartsBg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.bgHeart {
+  position: absolute;
+  bottom: -20px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 20px;
+  animation: floatUp 10s linear infinite;
+}
+
+.bgHeart:nth-child(odd) {
+  animation-duration: 14s;
+  font-size: 26px;
+}
+
+.bgHeart:nth-child(even) {
+  animation-duration: 9s;
+}
+
+.bgHeart {
+  left: calc(100% * var(--i));
+}
+
+.bgHeart:nth-child(1) { left: 5%; }
+.bgHeart:nth-child(2) { left: 15%; }
+.bgHeart:nth-child(3) { left: 25%; }
+.bgHeart:nth-child(4) { left: 35%; }
+.bgHeart:nth-child(5) { left: 45%; }
+.bgHeart:nth-child(6) { left: 55%; }
+.bgHeart:nth-child(7) { left: 65%; }
+.bgHeart:nth-child(8) { left: 75%; }
+.bgHeart:nth-child(9) { left: 85%; }
+.bgHeart:nth-child(10) { left: 95%; }
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-110vh) scale(1.4);
+    opacity: 0;
+  }
+}
+
+/* Ensure content stays above hearts */
+.card {
+  position: relative;
+  z-index: 2;
+}
