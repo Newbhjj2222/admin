@@ -6,7 +6,7 @@ import {
 } from "react-icons/fa";
 import { GiRose, GiLovers } from "react-icons/gi";
 import { BsHeartFill } from "react-icons/bs";
-import styles from "../styles/saint.module.css";
+import styles from "../styles/Saint.module.css";
 
 export default function Saint() {
   return (
