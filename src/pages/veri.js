@@ -71,6 +71,8 @@ export default function AdminAuthors({ authors }) {
       <style jsx>{`
         .grid {
           display: grid;
+          margin-top: 80px;
+          margin-bottom: 140px;
           grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
           gap: 20px;
         }
