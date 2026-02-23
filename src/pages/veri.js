@@ -34,7 +34,7 @@ export default function AdminAuthors({ authors }) {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: "20px", marginTop: "80px" }}>
       <h2>Authors Management</h2>
 
       <div className="grid">
@@ -71,7 +71,6 @@ export default function AdminAuthors({ authors }) {
       <style jsx>{`
         .grid {
           display: grid;
-          margin-top: 80px;
           margin-bottom: 140px;
           grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
           gap: 20px;
