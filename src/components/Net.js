@@ -42,15 +42,19 @@ const Net = () => {
           <li><Link href="/verse">Bible verse manager</Link></li>
           <li><Link href="/withdrawal">Withdrawal requests</Link></li>
           <li><Link href="/code">Useful code</Link></li>
-          <li><Link href="https://dash-nine-rho.vercel.app/sliy">NetSlider</Link></li>
+          <li><Link href="https://dash-coral-seven.vercel.app/sliy">NetSlider</Link></li>
           <li><Link href="/Mane">Dashboard manager</Link></li>
           <li><Link href="https://www.newtalentsg.co.rw/netma">Netweb requests</Link></li>
           <li><Link href="/Profile">Profile</Link></li>
-         <li><Link href="https://bmmm.ct.ws">Make Payouts</Link></li>
-         <li><Link href="https://dash-nine-rho.vercel.app/freema">Free Stories manager</Link></li>
-          <li><Link href="https://dash-nine-rho.vercel.app/manage">News manager</Link></li>
-          <li><Link href="https://dash-nine-rho.vercel.app/addnew">Publish news</Link></li>
-          <li><Link href="https://dash-nine-rho.vercel.app/poly">Poly maker</Link></li>
+          <li><Link href="https://dash-coral-seven.vercel.app/upload">Video Ads</Link></li>
+          <li><Link href="https://www.newtalentsg.co.rw/luck">Weekly Lucky results</Link></li>
+         <li><Link href="https://newtalentsg.co.rw/series">Auto Share</Link></li>
+         <li><Link href="https://www.newtalentsg.co.rw/share">Auto 1 share</Link></li>
+         <li><Link href="https://payout.rf.gd/?i=1">Make Payouts</Link></li>
+         <li><Link href="https://dash-coral-seven.vercel.app/freema">Free Stories manager</Link></li>
+          <li><Link href="https://dash-coral-seven.vercel.app/manage">News manager</Link></li>
+          <li><Link href="https://dash-coral-seven.vercel.app/addnew">Publish news</Link></li>
+          <li><Link href="https://dash-coral-seven.vercel.app/poly">Poly maker</Link></li>
         </ul>
       </nav>
     </header>
