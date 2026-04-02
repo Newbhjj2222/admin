@@ -67,7 +67,7 @@ export default function NESPage({
               <tr>
                 <td>{selectedData.plan || "N/A"}</td>
                 <td>{selectedData.nes || "N/A"}</td>
-                <td>{selectedData.timestamp || "N/A"}</td>
+                <td>{selectedData.time || "N/A"}</td>
                 <td>
                   <form method="POST" className={styles.inlineForm}>
                     <input type="hidden" name="user" value={selectedId} />
