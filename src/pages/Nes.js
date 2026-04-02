@@ -100,18 +100,16 @@ export async function getServerSideProps(context) {
   let message = null;
 
   // FETCH ALL DEPOSITERS
-  let snap;
   let depositers = [];
   try {
-    snap = await getDocs(collection(db, "depositers"));
+    const snap = await getDocs(collection(db, "depositers"));
     depositers = snap.docs.map((d) => ({ id: d.id }));
   } catch (err) {
     console.error("Error fetching depositers:", err);
   }
 
-  // FILTER BY SEARCH
   if (search) {
-    depositers = depositers.filter((d) =>
+    depositers = depositers.filter(d =>
       d.id.toLowerCase().includes(search.toLowerCase())
     );
   }
@@ -124,15 +122,13 @@ export async function getServerSideProps(context) {
       if (d.exists()) {
         const data = d.data();
 
-        // FORMAT TIME OR TIMESTAMP SAFELY
+        // SAFE TIME FORMATTING (serverTimestamp na string/number)
         let formattedTime = null;
-        if (data.timestamp) {
-          if (typeof data.timestamp.toDate === "function") {
-            // Firestore Timestamp
-            formattedTime = data.timestamp.toDate().toLocaleDateString("en-GB");
-          } else if (typeof data.timestamp === "string" || typeof data.timestamp === "number") {
-            // String or number
-            formattedTime = new Date(data.timestamp).toLocaleDateString("en-GB");
+        if (data.time) {
+          if (typeof data.time.toDate === "function") {
+            formattedTime = data.time.toDate().toLocaleDateString("en-GB");
+          } else if (typeof data.time === "string" || typeof data.time === "number") {
+            formattedTime = new Date(data.time).toLocaleDateString("en-GB");
           }
         }
 
