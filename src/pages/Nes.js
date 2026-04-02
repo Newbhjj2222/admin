@@ -92,39 +92,24 @@ export default function NESPage({
   );
 }
 
-//
-// ================== SSR ==================
-//
+// ================== SSR for NES page ==================
 export async function getServerSideProps(context) {
-  const { query, req } = context;
+  const { query } = context;
   const selectedId = query.user || null;
   const search = query.search || "";
   let message = null;
 
-  // HANDLE UPDATE (POST)
-  if (req.method === "POST") {
-    let body = "";
-    await new Promise((resolve) => {
-      req.on("data", (chunk) => (body += chunk));
-      req.on("end", resolve);
-    });
-
-    const params = new URLSearchParams(body);
-    const user = params.get("user");
-    const nes = params.get("nes");
-
-    if (user && nes) {
-      await updateDoc(doc(db, "depositers", user), {
-        nes: Number(nes),
-      });
-      message = "NES yavuguruwe neza!";
-    }
+  // FETCH ALL DEPOSITERS
+  let snap;
+  let depositers = [];
+  try {
+    snap = await getDocs(collection(db, "depositers"));
+    depositers = snap.docs.map((d) => ({ id: d.id }));
+  } catch (err) {
+    console.error("Error fetching depositers:", err);
   }
 
-  // FETCH ALL DEPOSITERS
-  const snap = await getDocs(collection(db, "depositers"));
-  let depositers = snap.docs.map((d) => ({ id: d.id }));
-
+  // FILTER BY SEARCH
   if (search) {
     depositers = depositers.filter((d) =>
       d.id.toLowerCase().includes(search.toLowerCase())
@@ -134,15 +119,30 @@ export async function getServerSideProps(context) {
   // FETCH SELECTED USER
   let selectedData = null;
   if (selectedId) {
-    const d = await getDoc(doc(db, "depositers", selectedId));
-    if (d.exists()) {
-      const data = d.data();
-      selectedData = {
-        ...data,
-        timestamp: data.timestamp
-          ? data.timestamp.toDate().toLocaleDateString("en-GB")
-          : null,
-      };
+    try {
+      const d = await getDoc(doc(db, "depositers", selectedId));
+      if (d.exists()) {
+        const data = d.data();
+
+        // FORMAT TIME OR TIMESTAMP SAFELY
+        let formattedTime = null;
+        if (data.timestamp) {
+          if (typeof data.timestamp.toDate === "function") {
+            // Firestore Timestamp
+            formattedTime = data.timestamp.toDate().toLocaleDateString("en-GB");
+          } else if (typeof data.timestamp === "string" || typeof data.timestamp === "number") {
+            // String or number
+            formattedTime = new Date(data.timestamp).toLocaleDateString("en-GB");
+          }
+        }
+
+        selectedData = {
+          ...data,
+          time: formattedTime,
+        };
+      }
+    } catch (err) {
+      console.error("Error fetching selected user:", err);
     }
   }
 
