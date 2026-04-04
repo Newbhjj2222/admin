@@ -1,21 +1,47 @@
-
-// pages/nes.js
 import { db } from "@/components/firebase";
 import {
   collection,
   getDocs,
   doc,
   getDoc,
-  updateDoc,
 } from "firebase/firestore";
+import { useState } from "react";
 import styles from "@/styles/nes.module.css";
 
 export default function NESPage({
   depositers,
   selectedId,
   selectedData,
-  message,
 }) {
+  const [message, setMessage] = useState("");
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const user = formData.get("user");
+    const nes = formData.get("nes");
+
+    try {
+      const res = await fetch("/api/update-nes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user, nes }),
+      });
+
+      const data = await res.json();
+      setMessage(data.message);
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (err) {
+      setMessage("Error updating NES");
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.giver}>
@@ -69,10 +95,10 @@ export default function NESPage({
                 <td>{selectedData.nes || "N/A"}</td>
                 <td>{selectedData.time || "N/A"}</td>
                 <td>
-                  <form method="POST" className={styles.inlineForm}>
+                  <form onSubmit={handleUpdate} className={styles.inlineForm}>
                     <input type="hidden" name="user" value={selectedId} />
                     <input
-                      type="text"
+                      type="number"
                       name="nes"
                       placeholder="New NES"
                       required
@@ -92,42 +118,42 @@ export default function NESPage({
   );
 }
 
-// ================== SSR for NES page ==================
+// ================== SSR ==================
 export async function getServerSideProps(context) {
   const { query } = context;
   const selectedId = query.user || null;
   const search = query.search || "";
-  let message = null;
 
-  // FETCH ALL DEPOSITERS
   let depositers = [];
+
   try {
     const snap = await getDocs(collection(db, "depositers"));
     depositers = snap.docs.map((d) => ({ id: d.id }));
   } catch (err) {
-    console.error("Error fetching depositers:", err);
+    console.error(err);
   }
 
   if (search) {
-    depositers = depositers.filter(d =>
+    depositers = depositers.filter((d) =>
       d.id.toLowerCase().includes(search.toLowerCase())
     );
   }
 
-  // FETCH SELECTED USER
   let selectedData = null;
+
   if (selectedId) {
     try {
       const d = await getDoc(doc(db, "depositers", selectedId));
+
       if (d.exists()) {
         const data = d.data();
 
-        // SAFE TIME FORMATTING (serverTimestamp na string/number)
         let formattedTime = null;
+
         if (data.time) {
           if (typeof data.time.toDate === "function") {
             formattedTime = data.time.toDate().toLocaleDateString("en-GB");
-          } else if (typeof data.time === "string" || typeof data.time === "number") {
+          } else {
             formattedTime = new Date(data.time).toLocaleDateString("en-GB");
           }
         }
@@ -138,7 +164,7 @@ export async function getServerSideProps(context) {
         };
       }
     } catch (err) {
-      console.error("Error fetching selected user:", err);
+      console.error(err);
     }
   }
 
@@ -147,7 +173,6 @@ export async function getServerSideProps(context) {
       depositers,
       selectedId,
       selectedData,
-      message,
     },
   };
 }
